@@ -27,8 +27,11 @@ PARSE_BUTTON.addEventListener("click", function(){
             //console.log('What was matched is : ' + ORIGIN_ARRAY[x] );
             //console.log('The current array value we are pushing to is : ');
             //console.log(RESULT_ARRAY);
+
+            //The following will alternate default and primary domain names respectively.
             DEFAULT_OR_PRIMARY == 0 ? RESULT_ARRAY.push("Default Domain: " + ORIGIN_ARRAY[x]) : RESULT_ARRAY.push("Primary Domain: " + ORIGIN_ARRAY[x]);
-            DEFAULT_OR_PRIMARY++;//First pass is default and next pass is primary domain.
+            //The following will allow for proper recursion on a paste including several website domains. 
+            DEFAULT_OR_PRIMARY == 0 ? DEFAULT_OR_PRIMARY = 1 : DEFAULT_OR_PRIMARY = 0;
         }
 
         if (ORIGIN_ARRAY[x].match(/Site ID/i) != null){ //Using Increment to pull adjacent array value.
@@ -39,7 +42,7 @@ PARSE_BUTTON.addEventListener("click", function(){
 
         if (ORIGIN_ARRAY[x].match(/^\#(\d+)/) != null) { //Pull Customer number and remove the #
             let CUSTOMER_NUM = ORIGIN_ARRAY[x];
-            RESULT_ARRAY.push("Customer Number: " + CUSTOMER_NUM.substr(1)); //remove #
+            RESULT_ARRAY.push("Customer Number: " + CUSTOMER_NUM.substr(1)); //remove # character
 
         }
     }
