@@ -1,7 +1,8 @@
 //Variables Declared first to minimize DOM calls. 
 var PASTE_BOX = document.getElementById('pasteBox');
 var RESULT_BOX = document.getElementById('resultBox');
-var PARSE_BUTTON = document.getElementById('parseButton')
+var PARSE_BUTTON = document.getElementById('parseButton');
+var REQUEST_BOX = document.getElementById('requestBox');
 
 var PASTE_BOX_VALUE = PASTE_BOX.innerHTML;
 var DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
@@ -34,7 +35,7 @@ PARSE_BUTTON.addEventListener("click", function(){
         if (ORIGIN_ARRAY[x].match(/Site ID/i) != null){ //Using Increment to pull adjacent array value.
             let INDEX = x;
             INDEX++;
-            RESULT_ARRAY.push(ORIGIN_ARRAY[INDEX]);
+            RESULT_ARRAY.push("Site ID: " + ORIGIN_ARRAY[INDEX]);
         }
 
         if (ORIGIN_ARRAY[x].match(/^\#(\d+)/) != null) { //Pull Customer number and remove the #
@@ -43,6 +44,7 @@ PARSE_BUTTON.addEventListener("click", function(){
 
         }
     }
+    RESULT_ARRAY.push("Request: " + REQUEST_BOX.innerHTML);
     DEFAULT_OR_PRIMARY = 0; //Reset to 0 for next toolkit paste.
     for(var x in RESULT_ARRAY) { //Print to the results box. Increment through Result Array.
         console.log(RESULT_ARRAY[x]);
