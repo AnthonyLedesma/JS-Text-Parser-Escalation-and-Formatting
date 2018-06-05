@@ -16,10 +16,10 @@ PARSE_BUTTON.addEventListener("click", function(){
     RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####'); //Start of template
 
     for(var x in ORIGIN_ARRAY){//First remove all white spaces and set results to ORIGIN_ARRAY.
-        let WhiteSpaceRemover = ORIGIN_ARRAY[x].replace(/^\s+/i, '');
+        let WHITE_SPACE_REMOVER = ORIGIN_ARRAY[x].replace(/^\s+/i, '');
        // let SuperflousTextRemover = ORIGIN_ARRAY[x].replace(/overviewdiagnosticsTools/i, '');
        // let SuperflousTextRemover2 = ORIGIN_ARRAY[x].replace(/ACCOUNT/, '');
-        ORIGIN_ARRAY[x] = WhiteSpaceRemover;
+        ORIGIN_ARRAY[x] = WHITE_SPACE_REMOVER;
     }
 
     for(var x in ORIGIN_ARRAY){//Now that we have a clean array without whitespace we can pull out content.
@@ -44,12 +44,12 @@ PARSE_BUTTON.addEventListener("click", function(){
 
         }
     }
-    RESULT_ARRAY.push("Request: " + REQUEST_BOX.innerHTML);
+    RESULT_ARRAY.push("Request: " + REQUEST_BOX.innerHTML);//Append request to end of each array itteration.
     DEFAULT_OR_PRIMARY = 0; //Reset to 0 for next toolkit paste.
     for(var x in RESULT_ARRAY) { //Print to the results box. Increment through Result Array.
-        console.log(RESULT_ARRAY[x]);
-        RESULT_BOX.append(RESULT_ARRAY[x]);
-        RESULT_BOX.append('\n');
+        console.log(RESULT_ARRAY[x]);//Log for review.
+        RESULT_BOX.append(RESULT_ARRAY[x]);//Iterate each key and value
+        RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
     }
 
 });
