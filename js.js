@@ -4,14 +4,13 @@ var RESULT_BOX = document.getElementById('resultBox');
 var PARSE_BUTTON = document.getElementById('parseButton');
 var REQUEST_BOX = document.getElementById('requestBox');
 
-var PASTE_BOX_VALUE = PASTE_BOX.innerHTML;
 var DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
 
 //All functionality tied to button click event at this time.
 PARSE_BUTTON.addEventListener("click", function(){
     
     //Splitting long string into array by first splitting new lines. 
-    let ORIGIN_ARRAY = PASTE_BOX_VALUE.split("\n");
+    let ORIGIN_ARRAY = PASTE_BOX.value.split("\n");
     RESULT_ARRAY = []; // Result array will contain escalation details. 
     RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####'); //Start of template
 
