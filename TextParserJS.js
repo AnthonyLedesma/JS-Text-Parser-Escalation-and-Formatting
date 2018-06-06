@@ -6,14 +6,21 @@ var REQUEST_BOX = document.getElementById('requestBox');
 
 var DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
 
+let DEFAULT_MWP2_CHECK = document.getElementById('DefaultMWP2Check');
+let DEFAULT_HTTPD_CHECK = document.getElementById('DefaultHTTPDCheck');
+let DEFAULT_PHP_CHECK = document.getElementById('DefaultPHPCheck');
+    
+let PRIMARY_MWP2_CHECK = document.getElementById('PrimaryMWP2Check');
+let PRIMARY_HTTPD_CHECK = document.getElementById('PrimaryHTTPDCheck');
+let PRIMARY_PHP_CHECK = document.getElementById('PrimaryPHPCheck');
+
 //All functionality tied to button click event at this time.
 PARSE_BUTTON.addEventListener("click", function(){
     
     //Splitting long string into array by first splitting new lines. 
     let ORIGIN_ARRAY = PASTE_BOX.value.split("\n");
     let RESULT_ARRAY = []; // Result array will contain escalation details. 
-    let PRIMARY_DOMAIN_VALUE;
-    let DEFAULT_DOMAIN_VALUE;
+    
     RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####'); //Start of template
 
     for(let x in ORIGIN_ARRAY){//First remove all white spaces and set results to ORIGIN_ARRAY.
@@ -67,68 +74,60 @@ PARSE_BUTTON.addEventListener("click", function(){
         document.getElementById('PrimaryDomainSiteChecks').setAttribute('style', 'display: inline;');
     }
 
-});
-
-let DEFAULT_MWP2_CHECK = document.getElementById('DefaultMWP2Check');
-let DEFAULT_HTTPD_CHECK = document.getElementById('DefaultHTTPDCheck');
-let DEFAULT_PHP_CHECK = document.getElementById('DefaultPHPCheck');
+//The following are all event listeners looking for box checks. When checked it will append to the parsing form. 
+//Would like to make checkbox generation dynamic based on domain names.
+//Also seems reasonable to capture end of template locations per site so that we can ->
+//inject check passes directly into template. 
+//Finally I should consider a single event listener for all checkboxes.
+    DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
+        if(this.checked) {
+            RESULT_BOX.append(DEFAULT_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n');
+            DEFAULT_MWP2_CHECK.setAttribute('disabled', 'disabled');
     
-let PRIMARY_MWP2_CHECK = document.getElementById('PrimaryMWP2Check');
-let PRIMARY_HTTPD_CHECK = document.getElementById('PrimaryHTTPDCheck');
-let PRIMARY_PHP_CHECK = document.getElementById('PrimaryPHPCheck');
+        }
+    });
+    
+    DEFAULT_HTTPD_CHECK.addEventListener( 'change', function() {
+        if(this.checked) {
+            RESULT_BOX.append(DEFAULT_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n');
+            DEFAULT_HTTPD_CHECK.setAttribute('disabled', 'disabled');
+    
+        }
+    });
+    
+    DEFAULT_PHP_CHECK.addEventListener( 'change', function() {
+        if(this.checked) {
+            RESULT_BOX.append(DEFAULT_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n');
+            DEFAULT_PHP_CHECK.setAttribute('disabled', 'disabled');
+    
+        }
+    });
+    
+    PRIMARY_MWP2_CHECK.addEventListener( 'change', function() {
+        if(this.checked) {
+            RESULT_BOX.append(PRIMARY_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n');
+            PRIMARY_MWP2_CHECK.setAttribute('disabled', 'disabled');
+    
+        }
+    });
+    
+    PRIMARY_HTTPD_CHECK.addEventListener( 'change', function() {
+        if(this.checked) {
+            RESULT_BOX.append(PRIMARY_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n');
+            PRIMARY_HTTPD_CHECK.setAttribute('disabled', 'disabled');
+    
+        }
+    });
+    
+    PRIMARY_PHP_CHECK.addEventListener( 'change', function() {
+        if(this.checked) {
+            RESULT_BOX.append(PRIMARY_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n');
+            PRIMARY_PHP_CHECK.setAttribute('disabled', 'disabled');
+    
+        }
+    });
 
-//let DISABLED_ATTRIBUTE = document.createAttribute('disabled');
-//DISABLED_ATTRIBUTE.value = 'disabled';
-
-DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.append('Default Domain MWP2 Site Check Passed!' + '\n');
-        DEFAULT_MWP2_CHECK.setAttribute('disabled', 'disabled');
-
-    }
 });
-
-DEFAULT_HTTPD_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.append('Default Domain HTTPD Site Check Passed!' + '\n');
-        DEFAULT_HTTPD_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-DEFAULT_PHP_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.append('Default Domain PHP Site Check Passed!' + '\n');
-        DEFAULT_PHP_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-PRIMARY_MWP2_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.append('Primary Domain MWP2 Site Check Passed!' + '\n');
-        PRIMARY_MWP2_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-PRIMARY_HTTPD_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.append('Primary Domain HTTPD Site Check Passed!' + '\n');
-        PRIMARY_HTTPD_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-PRIMARY_PHP_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.append('Primary Domain PHP Site Check Passed!' + '\n');
-        PRIMARY_PHP_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-
 
 
 //Contant Template For Reference 
