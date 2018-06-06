@@ -64,12 +64,15 @@ let PRIMARY_MWP2_CHECK = document.getElementById('PrimaryMWP2Check');
 let PRIMARY_HTTPD_CHECK = document.getElementById('PrimaryHTTPDCheck');
 let PRIMARY_PHP_CHECK = document.getElementById('PrimaryPHPCheck');
 
+let DISABLED_ATTRIBUTE = document.createAttribute('disabled');
+DISABLED_ATTRIBUTE.value = 'disabled';
 
 DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
         RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
         RESULT_BOX.append('Default Domain MWP2 Site Check Passed!');
-        DEFAULT_MWP2_CHECK.style.visibility="hidden";
+        DEFAULT_MWP2_CHECK.setAttributeNode(DISABLED_ATTRIBUTE);
+
     }
 });
 
