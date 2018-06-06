@@ -5,10 +5,16 @@ Properly pulling default and primary domains, Site ID, Customer Number and forma
 
 Added ability to add recursive site info to the template.
 
+Added default and primary domain name comparison to help with site check comparison.
+
+Working testing model can now be found on Pact Confluence Home Page.
+
 Still Needed:
 
 -CSS Style
 
 -Extraction of site checks (need demo data) to place within template.
 
--Working testing model. Would like to host and integrate on confluence.
+-Reset default settings button for template generator.
+
+-Manual Site Checks should have domain specification. 
