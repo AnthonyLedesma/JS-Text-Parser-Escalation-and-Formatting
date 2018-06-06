@@ -53,7 +53,7 @@ PARSE_BUTTON.addEventListener("click", function(){
         RESULT_BOX.append(RESULT_ARRAY[x]);//Iterate each key and value
         RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
     }
-
+    RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
 });
 
 let DEFAULT_MWP2_CHECK = document.getElementById('DefaultMWP2Check');
@@ -64,14 +64,53 @@ let PRIMARY_MWP2_CHECK = document.getElementById('PrimaryMWP2Check');
 let PRIMARY_HTTPD_CHECK = document.getElementById('PrimaryHTTPDCheck');
 let PRIMARY_PHP_CHECK = document.getElementById('PrimaryPHPCheck');
 
-let DISABLED_ATTRIBUTE = document.createAttribute('disabled');
-DISABLED_ATTRIBUTE.value = 'disabled';
+//let DISABLED_ATTRIBUTE = document.createAttribute('disabled');
+//DISABLED_ATTRIBUTE.value = 'disabled';
 
 DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
-        RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
-        RESULT_BOX.append('Default Domain MWP2 Site Check Passed!');
-        DEFAULT_MWP2_CHECK.setAttributeNode(DISABLED_ATTRIBUTE);
+        RESULT_BOX.append('Default Domain MWP2 Site Check Passed!' + '\n');
+        DEFAULT_MWP2_CHECK.setAttribute('disabled', 'disabled');
+
+    }
+});
+
+DEFAULT_HTTPD_CHECK.addEventListener( 'change', function() {
+    if(this.checked) {
+        RESULT_BOX.append('Default Domain HTTPD Site Check Passed!' + '\n');
+        DEFAULT_HTTPD_CHECK.setAttribute('disabled', 'disabled');
+
+    }
+});
+
+DEFAULT_PHP_CHECK.addEventListener( 'change', function() {
+    if(this.checked) {
+        RESULT_BOX.append('Default Domain PHP Site Check Passed!' + '\n');
+        DEFAULT_PHP_CHECK.setAttribute('disabled', 'disabled');
+
+    }
+});
+
+PRIMARY_MWP2_CHECK.addEventListener( 'change', function() {
+    if(this.checked) {
+        RESULT_BOX.append('Primary Domain MWP2 Site Check Passed!' + '\n');
+        PRIMARY_MWP2_CHECK.setAttribute('disabled', 'disabled');
+
+    }
+});
+
+PRIMARY_HTTPD_CHECK.addEventListener( 'change', function() {
+    if(this.checked) {
+        RESULT_BOX.append('Primary Domain HTTPD Site Check Passed!' + '\n');
+        PRIMARY_HTTPD_CHECK.setAttribute('disabled', 'disabled');
+
+    }
+});
+
+PRIMARY_PHP_CHECK.addEventListener( 'change', function() {
+    if(this.checked) {
+        RESULT_BOX.append('Primary Domain PHP Site Check Passed!' + '\n');
+        PRIMARY_PHP_CHECK.setAttribute('disabled', 'disabled');
 
     }
 });
