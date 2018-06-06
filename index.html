@@ -7,8 +7,22 @@
   </head>
   <body>
       <button id="parseButton">Parse</button>
+      
       <p>What is the issue being reported?</p>
       <textarea style="width: 500px" id="requestBox">MYH Backups not recording. Attempted fix by reinstall Worker Plugin. Site Checks Pass.</textarea>
+      <div id="DefaultDomainSiteChecks" style="display: none;">
+          <p>Default Domain Site Checks:</p>
+          <label><input id="DefaultMWP2Check" type="checkbox">MWP2 Check Passed?</label>
+          <label><input id="DefaultHTTPDCheck" type="checkbox">HTTPD Check Passed?</label>
+          <label><input id="DefaultPHPCheck" type="checkbox">PHP Check Passed?</label>
+        </div>
+        <div id="PrimaryDomainSiteChecks" style="display: none;">
+          <p>Primary Domain Site Checks:</p>
+          <label><input id="PrimaryMWP2Check" type="checkbox">MWP2 Check Passed?</label>
+          <label><input id="PrimaryHTTPDCheck" type="checkbox">HTTPD Check Passed?</label>
+          <label><input id="PrimaryPHPCheck" type="checkbox">PHP Check Passed?</label>
+        </div>
+        
       <p>Paste the agent toolkit information here. ( all of it will be fine.)</p>
       <textarea style="width: 500px; height: 800px" id="pasteBox">OverviewDiagnosticsTools
         Place Holders
@@ -38,18 +52,7 @@
         Create an internal user to access SFTP/SSH.</textarea>
 
 
-        <div id="DefaultDomainSiteChecks">
-          <p>Default Domain Site Checks:</p>
-          <label><input id="DefaultMWP2Check" type="checkbox">MWP2 Check Passed?</label>
-          <label><input id="DefaultHTTPDCheck" type="checkbox">HTTPD Check Passed?</label>
-          <label><input id="DefaultPHPCheck" type="checkbox">PHP Check Passed?</label>
-        </div>
-        <div id="PrimaryDomainSiteChecks">
-          <p>Primary Domain Site Checks:</p>
-          <label><input id="PrimaryMWP2Check" type="checkbox">MWP2 Check Passed?</label>
-          <label><input id="PrimaryHTTPDCheck" type="checkbox">HTTPD Check Passed?</label>
-          <label><input id="PrimaryPHPCheck" type="checkbox">PHP Check Passed?</label>
-        </div>
+        
 
         
 

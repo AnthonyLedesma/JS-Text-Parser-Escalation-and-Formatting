@@ -12,6 +12,8 @@ PARSE_BUTTON.addEventListener("click", function(){
     //Splitting long string into array by first splitting new lines. 
     let ORIGIN_ARRAY = PASTE_BOX.value.split("\n");
     let RESULT_ARRAY = []; // Result array will contain escalation details. 
+    let PRIMARY_DOMAIN_VALUE;
+    let DEFAULT_DOMAIN_VALUE;
     RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####'); //Start of template
 
     for(let x in ORIGIN_ARRAY){//First remove all white spaces and set results to ORIGIN_ARRAY.
@@ -31,6 +33,7 @@ PARSE_BUTTON.addEventListener("click", function(){
             //The following will alternate default and primary domain names respectively.
             DEFAULT_OR_PRIMARY == 0 ? RESULT_ARRAY.push("Default Domain: " + ORIGIN_ARRAY[x]) : RESULT_ARRAY.push("Primary Domain: " + ORIGIN_ARRAY[x]);
             //The following will allow for proper recursion on a paste including several website domains. 
+            DEFAULT_OR_PRIMARY == 0 ? DEFAULT_DOMAIN_VALUE = ORIGIN_ARRAY[x] : PRIMARY_DOMAIN_VALUE = ORIGIN_ARRAY[x];
             DEFAULT_OR_PRIMARY == 0 ? DEFAULT_OR_PRIMARY = 1 : DEFAULT_OR_PRIMARY = 0;
         }
 
@@ -54,6 +57,16 @@ PARSE_BUTTON.addEventListener("click", function(){
         RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
     }
     RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
+    if (DEFAULT_DOMAIN_VALUE == PRIMARY_DOMAIN_VALUE) {
+        document.getElementById('DefaultDomainSiteChecks').removeAttribute("style")
+        document.getElementById('DefaultDomainSiteChecks').setAttribute('style', 'display: inline;');
+    } else {
+        document.getElementById('DefaultDomainSiteChecks').removeAttribute("style")
+        document.getElementById('PrimaryDomainSiteChecks').removeAttribute("style")
+        document.getElementById('DefaultDomainSiteChecks').setAttribute('style', 'display: inline;');
+        document.getElementById('PrimaryDomainSiteChecks').setAttribute('style', 'display: inline;');
+    }
+
 });
 
 let DEFAULT_MWP2_CHECK = document.getElementById('DefaultMWP2Check');
