@@ -25,8 +25,6 @@ PARSE_BUTTON.addEventListener("click", function(){
 
     for(let x in ORIGIN_ARRAY){//First remove all white spaces and set results to ORIGIN_ARRAY.
         let WHITE_SPACE_REMOVER = ORIGIN_ARRAY[x].replace(/^\s+/i, '');
-       // let SuperflousTextRemover = ORIGIN_ARRAY[x].replace(/overviewdiagnosticsTools/i, '');
-       // let SuperflousTextRemover2 = ORIGIN_ARRAY[x].replace(/ACCOUNT/, '');
         ORIGIN_ARRAY[x] = WHITE_SPACE_REMOVER;
     }
 
