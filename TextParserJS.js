@@ -36,22 +36,18 @@ let PRIMARY_PHP_CHECK = document.getElementById('PrimaryPHPCheck');
  let ORIGIN_ARRAY = []; // Global Origin Array will have values set after parse button click.
  let RESULT_ARRAY = []; // Result array will contain escalation details. 
 
-//All functionality tied to button click event at this time.
+//3 top level event listeners [ParseButton, ResetButton, Checkbox Listeners]
+//Parse button click events.
 PARSE_BUTTON.addEventListener("click", function(){
-    
     ORIGIN_ARRAY = []; // Clearing for recursive of more domains.
     //Splitting long string into array by first splitting new lines. 
     ORIGIN_ARRAY = PASTE_BOX.value.split("\n");
     RESULT_ARRAY = []; // Result array will contain escalation details. 
-    console.log(PASTE_BOX.innerText);
-    console.log(PASTE_BOX.textContent);
-    console.log(PASTE_BOX.value);
-    
     RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####'); //Start of template
 
     for(let x in ORIGIN_ARRAY){//First remove all white spaces and set results to ORIGIN_ARRAY.
         let WHITE_SPACE_REMOVER = ORIGIN_ARRAY[x].replace(/^\s+/i, '');
-        ORIGIN_ARRAY[x] = WHITE_SPACE_REMOVER;
+        ORIGIN_ARRAY[x] = WHITE_SPACE_REMOVER; //Setting origin array to match sanitized content
     }
 
     for(let x in ORIGIN_ARRAY){//Now that we have a clean array without whitespace we can pull out content.
@@ -59,13 +55,14 @@ PARSE_BUTTON.addEventListener("click", function(){
 
             //The following will alternate default and primary domain names respectively.
             DEFAULT_OR_PRIMARY == 0 ? RESULT_ARRAY.push("Default Domain: " + ORIGIN_ARRAY[x]) : RESULT_ARRAY.push("Primary Domain: " + ORIGIN_ARRAY[x]);
+
             //The following will allow for proper recursion on a paste including several website domains. 
-            DEFAULT_OR_PRIMARY == 0 ? DEFAULT_DOMAIN_VALUE = ORIGIN_ARRAY[x] : PRIMARY_DOMAIN_VALUE = ORIGIN_ARRAY[x];
+            DEFAULT_OR_PRIMARY == 0 ? DEFAULT_DOMAIN_VALUE = ORIGIN_ARRAY[x] : PRIMARY_DOMAIN_VALUE = ORIGIN_ARRAY[x]; //Setting the values of domain for use with site checks.
             DEFAULT_OR_PRIMARY == 0 ? DEFAULT_OR_PRIMARY = 1 : DEFAULT_OR_PRIMARY = 0;
         }
 
         if (ORIGIN_ARRAY[x].match(/Site ID/i) != null){ //Using Increment to pull adjacent array value.
-            let INDEX = x;
+            let INDEX = x;// Not able to increment x within for look so setting temporary index.
             INDEX++;
             RESULT_ARRAY.push("Site ID: " + ORIGIN_ARRAY[INDEX]);
         }
@@ -80,7 +77,6 @@ PARSE_BUTTON.addEventListener("click", function(){
     DEFAULT_OR_PRIMARY = 0; //Reset to 0 for next toolkit paste.
     if (REQUEST_BOX.value != '' && PASTE_BOX.value != ''){//Confirm that values exist
         for(let x in RESULT_ARRAY) { //Print to the results box. Increment through Result Array.
-            console.log(RESULT_ARRAY[x]);//Log for review.
             RESULT_BOX.value = RESULT_BOX.value + '\n' + RESULT_ARRAY[x];//Iterate each key and value
             //RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
         }
@@ -90,6 +86,7 @@ PARSE_BUTTON.addEventListener("click", function(){
     //display only 3 or all 6 site check options.
     if (REQUEST_BOX.value != '' && PASTE_BOX.value != ''){//Confirm that values exist
         if (DEFAULT_DOMAIN_VALUE == PRIMARY_DOMAIN_VALUE && DEFAULT_DOMAIN_VALUE != '') {
+            //The next 2 lines are to display hidden row for default domain site checks
             DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
             DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
 
@@ -106,6 +103,7 @@ PARSE_BUTTON.addEventListener("click", function(){
                 PHP1_CHECK.text = PHP1_CHECK.href;
             }//Preventing strange results after reset. end
         } else if (DEFAULT_DOMAIN_VALUE != '') {
+            //Next 4 lines are displaying the hidden rows for site check confirmation.
             DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
             PRIMARY_DOMAIN_HIDDEN_ROW.removeAttribute("style")
             DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
@@ -132,10 +130,8 @@ PARSE_BUTTON.addEventListener("click", function(){
                 PHP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_php_check__');
                 PHP2_CHECK.text = PHP2_CHECK.href;
             }//Preventing strange results after reset. end
-        }
+        }//Close of else if statment.
     }//End of if statement to confirm values.
-
-
 });
 
 
@@ -150,7 +146,7 @@ DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
         DEFAULT_MWP2_CHECK.setAttribute('disabled', 'disabled');
 
     }
-});
+}); //Redundant event listeners are redundant. 
 
 DEFAULT_HTTPD_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
@@ -188,11 +184,10 @@ PRIMARY_PHP_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
         RESULT_BOX.value = RESULT_BOX.value + '\n' + PRIMARY_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n';
         PRIMARY_PHP_CHECK.setAttribute('disabled', 'disabled');
-        console.log("Primary PHP is Checked")
     }
 });
 
-//When reset button is clicked we should reset form to empty.
+//When reset button is clicked we should reset form to empty. Final event listener in file
 //Elements to clear:
 //PasteBox - ResultBox - RequestBox - Link text and href - Checkbox hide and enable.
 //Reset arrays and DefaultDomain and PrimaryDomain variables.
@@ -202,7 +197,6 @@ RESET_BUTTON.addEventListener('click', function() {
     PASTE_BOX.textContent = '';
     PASTE_BOX.value = '';
     //Results Box
-
     RESULT_BOX.value = '';
     //Request Box
     REQUEST_BOX.innerText = '';
@@ -235,4 +229,4 @@ RESET_BUTTON.addEventListener('click', function() {
     PRIMARY_HTTPD_CHECK.removeAttribute('disabled');PRIMARY_HTTPD_CHECK.checked = false;
     PRIMARY_PHP_CHECK.removeAttribute('disabled');PRIMARY_PHP_CHECK.checked = false;
 
-})
+});
