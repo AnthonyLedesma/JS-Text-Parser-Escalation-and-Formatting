@@ -43,6 +43,9 @@ PARSE_BUTTON.addEventListener("click", function(){
     //Splitting long string into array by first splitting new lines. 
     ORIGIN_ARRAY = PASTE_BOX.value.split("\n");
     RESULT_ARRAY = []; // Result array will contain escalation details. 
+    console.log(PASTE_BOX.innerText);
+    console.log(PASTE_BOX.textContent);
+    console.log(PASTE_BOX.value);
     
     RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####'); //Start of template
 
@@ -73,62 +76,64 @@ PARSE_BUTTON.addEventListener("click", function(){
 
         }
     }
-    RESULT_ARRAY.push("Request: " + REQUEST_BOX.innerHTML);//Append request to end of each array itteration.
+    RESULT_ARRAY.push("Request: " + REQUEST_BOX.value);//alter value to end of each array itteration.
     DEFAULT_OR_PRIMARY = 0; //Reset to 0 for next toolkit paste.
-    for(let x in RESULT_ARRAY) { //Print to the results box. Increment through Result Array.
-        console.log(RESULT_ARRAY[x]);//Log for review.
-        RESULT_BOX.append(RESULT_ARRAY[x]);//Iterate each key and value
-        RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
-    }
-    RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
-
+    if (REQUEST_BOX.value != '' && PASTE_BOX.value != ''){//Confirm that values exist
+        for(let x in RESULT_ARRAY) { //Print to the results box. Increment through Result Array.
+            console.log(RESULT_ARRAY[x]);//Log for review.
+            RESULT_BOX.value = RESULT_BOX.value + '\n' + RESULT_ARRAY[x];//Iterate each key and value
+            //RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
+        }
+        RESULT_BOX.value = RESULT_BOX.value + ('\n');//Adding linebreaks for easy reading.
+    }//End of values exist confirmation.
    
     //display only 3 or all 6 site check options.
-    if (DEFAULT_DOMAIN_VALUE == PRIMARY_DOMAIN_VALUE && DEFAULT_DOMAIN_VALUE != '') {
-        DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
-        DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
+    if (REQUEST_BOX.value != '' && PASTE_BOX.value != ''){//Confirm that values exist
+        if (DEFAULT_DOMAIN_VALUE == PRIMARY_DOMAIN_VALUE && DEFAULT_DOMAIN_VALUE != '') {
+            DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
+            DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
 
-        if(DEFAULT_DOMAIN_VALUE != ''){//If to prevent strange results after reset.
-        //Creating only 3 links for site checks
-        //MWP1 Pod Check
-        MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
-        MWP1_CHECK.text = MWP1_CHECK.href;
-        //HTTPD1 Pod Check
-        HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
-        HTTPD1_CHECK.text = HTTPD1_CHECK.href;
-        //PHP1 Pod Check
-        PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
-        PHP1_CHECK.text = PHP1_CHECK.href;
-        }//Preventing strange results after reset. end
-    } else if (DEFAULT_DOMAIN_VALUE != '') {
-        DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
-        PRIMARY_DOMAIN_HIDDEN_ROW.removeAttribute("style")
-        DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
-        PRIMARY_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
+            if(DEFAULT_DOMAIN_VALUE != ''){//If to prevent strange results after reset.
+                //Creating only 3 links for site checks
+                //MWP1 Pod Check
+                MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
+                MWP1_CHECK.text = MWP1_CHECK.href;
+                //HTTPD1 Pod Check
+                HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+                HTTPD1_CHECK.text = HTTPD1_CHECK.href;
+                //PHP1 Pod Check
+                PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
+                PHP1_CHECK.text = PHP1_CHECK.href;
+            }//Preventing strange results after reset. end
+        } else if (DEFAULT_DOMAIN_VALUE != '') {
+            DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
+            PRIMARY_DOMAIN_HIDDEN_ROW.removeAttribute("style")
+            DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
+            PRIMARY_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
 
-        if(DEFAULT_DOMAIN_VALUE != '' && PRIMARY_DOMAIN_VALUE != ''){//If to prevent strange results after reset.
-        //Creating all 6 links for site Checks
-        //MWP1 Pod Check
-        MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
-        MWP1_CHECK.text = MWP1_CHECK.href;
-        //HTTPD1 Pod Check
-        HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
-        HTTPD1_CHECK.text = HTTPD1_CHECK.href;
-        //PHP1 Pod Check
-        PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
-        PHP1_CHECK.text = PHP1_CHECK.href;
-        //MWP2 Pod Check
-        MWP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_check__');
-        MWP2_CHECK.text = MWP2_CHECK.href;
-        //HTTPD2 Pod Check
-        HTTPD2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_httpd_check__');
-        HTTPD2_CHECK.text = HTTPD2_CHECK.href;
-        //PHP2 Pod Check
-        PHP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_php_check__');
-        PHP2_CHECK.text = PHP2_CHECK.href;
-        }//Preventing strange results after reset. end
-    }
-
+            if(DEFAULT_DOMAIN_VALUE != '' && PRIMARY_DOMAIN_VALUE != ''){//If to prevent strange results    after reset.
+                //Creating all 6 links for site Checks
+                //MWP1 Pod Check
+                MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
+                MWP1_CHECK.text = MWP1_CHECK.href;
+                //HTTPD1 Pod Check
+                HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+                HTTPD1_CHECK.text = HTTPD1_CHECK.href;
+                //PHP1 Pod Check
+                PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
+                PHP1_CHECK.text = PHP1_CHECK.href;
+                //MWP2 Pod Check
+                MWP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_check__');
+                MWP2_CHECK.text = MWP2_CHECK.href;
+                //HTTPD2 Pod Check
+                HTTPD2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+                HTTPD2_CHECK.text = HTTPD2_CHECK.href;
+                //PHP2 Pod Check
+                PHP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_php_check__');
+                PHP2_CHECK.text = PHP2_CHECK.href;
+            }//Preventing strange results after reset. end
+        }
+    }//End of if statement to confirm values.
 
 
 });
@@ -141,7 +146,7 @@ PARSE_BUTTON.addEventListener("click", function(){
 //Finally I should consider a single event listener for all checkboxes.
 DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
-        RESULT_BOX.append(DEFAULT_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n');
+        RESULT_BOX.value = RESULT_BOX.value + '\n' + DEFAULT_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n';
         DEFAULT_MWP2_CHECK.setAttribute('disabled', 'disabled');
 
     }
@@ -149,7 +154,7 @@ DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
 
 DEFAULT_HTTPD_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
-        RESULT_BOX.append(DEFAULT_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n');
+        RESULT_BOX.value = RESULT_BOX.value + '\n' + DEFAULT_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n';
         DEFAULT_HTTPD_CHECK.setAttribute('disabled', 'disabled');
 
     }
@@ -157,7 +162,7 @@ DEFAULT_HTTPD_CHECK.addEventListener( 'change', function() {
 
 DEFAULT_PHP_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
-        RESULT_BOX.append(DEFAULT_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n');
+        RESULT_BOX.value = RESULT_BOX.value + '\n' + DEFAULT_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n';
         DEFAULT_PHP_CHECK.setAttribute('disabled', 'disabled');
 
     }
@@ -165,7 +170,7 @@ DEFAULT_PHP_CHECK.addEventListener( 'change', function() {
 
 PRIMARY_MWP2_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
-        RESULT_BOX.append(PRIMARY_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n');
+        RESULT_BOX.value = RESULT_BOX.value + '\n' + PRIMARY_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n';
         PRIMARY_MWP2_CHECK.setAttribute('disabled', 'disabled');
 
     }
@@ -173,7 +178,7 @@ PRIMARY_MWP2_CHECK.addEventListener( 'change', function() {
 
 PRIMARY_HTTPD_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
-        RESULT_BOX.append(PRIMARY_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n');
+        RESULT_BOX.value = RESULT_BOX.value + '\n' + PRIMARY_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n';
         PRIMARY_HTTPD_CHECK.setAttribute('disabled', 'disabled');
 
     }
@@ -181,9 +186,9 @@ PRIMARY_HTTPD_CHECK.addEventListener( 'change', function() {
 
 PRIMARY_PHP_CHECK.addEventListener( 'change', function() {
     if(this.checked) {
-        RESULT_BOX.append(PRIMARY_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n');
+        RESULT_BOX.value = RESULT_BOX.value + '\n' + PRIMARY_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n';
         PRIMARY_PHP_CHECK.setAttribute('disabled', 'disabled');
-
+        console.log("Primary PHP is Checked")
     }
 });
 
@@ -194,10 +199,15 @@ PRIMARY_PHP_CHECK.addEventListener( 'change', function() {
 RESET_BUTTON.addEventListener('click', function() {
     //PasteBox
     PASTE_BOX.innerText = '';
+    PASTE_BOX.textContent = '';
+    PASTE_BOX.value = '';
     //Results Box
-    RESULT_BOX.innerText = '';
+
+    RESULT_BOX.value = '';
     //Request Box
     REQUEST_BOX.innerText = '';
+    REQUEST_BOX.textContent = '';
+    REQUEST_BOX.value = '';
     //Link text and href
     MWP1_CHECK.removeAttribute('href');MWP1_CHECK.text = '';
     MWP2_CHECK.removeAttribute('href');MWP2_CHECK.text = '';
