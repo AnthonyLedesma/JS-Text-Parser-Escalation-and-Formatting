@@ -9,18 +9,19 @@ Added default and primary domain name comparison to help with site check compari
 
 Working testing model can now be found on Pact Confluence Home Page.
 
+Added URL Links for specific site checks. 
+
+
+
 Still Needed:
 
 -CSS Style
 
 -Extraction of site checks (need demo data) to place within template.
 
--Reset default settings button for template generator.
-
--Manual Site Checks should have domain specification. 
-
 
 Integration Into Confluence - Requirements and Notes
+
 -In Confluence we have the option to import the javascript dependency and link to it directly. (Causes email notifications with updates)
 
 -Alternitively we can embed <script type='text/javascript'> </script> into the HTML macro to include all code on-page.
