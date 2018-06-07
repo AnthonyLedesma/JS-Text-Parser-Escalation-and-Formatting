@@ -3,6 +3,7 @@ var PASTE_BOX = document.getElementById('pasteBox');
 var RESULT_BOX = document.getElementById('resultBox');
 var PARSE_BUTTON = document.getElementById('parseButton');
 var REQUEST_BOX = document.getElementById('requestBox');
+var LINK_BOX = document.getElementById('linkBox');
 
 var DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
 
@@ -62,14 +63,55 @@ PARSE_BUTTON.addEventListener("click", function(){
         RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
     }
     RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
+
+    //Declaring Varaibles to hold Links DOM elements. 1 = default domain & 2 = primary domain.
+    let MWP1_CHECK = document.getElementById('MWP1');
+    let HTTPD1_CHECK = document.getElementById('HTTPD1');
+    let PHP1_CHECK = document.getElementById('PHP1');
+    //primary domain now
+    let MWP2_CHECK = document.getElementById('MWP2');
+    let HTTPD2_CHECK = document.getElementById('HTTPD2');
+    let PHP2_CHECK = document.getElementById('PHP2');
+    //display only 3 or all 6 site check options.
     if (DEFAULT_DOMAIN_VALUE == PRIMARY_DOMAIN_VALUE) {
         document.getElementById('DefaultDomainSiteChecks').removeAttribute("style")
         document.getElementById('DefaultDomainSiteChecks').setAttribute('style', 'display: inline;');
+
+        //Creating only 3 links for site checks
+        //MWP1 Pod Check
+        MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
+        MWP1_CHECK.text = MWP1_CHECK.href;
+        //HTTPD1 Pod Check
+        HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+        HTTPD1_CHECK.text = HTTPD1_CHECK.href;
+        //PHP1 Pod Check
+        PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
+        PHP1_CHECK.text = PHP1_CHECK.href;
     } else {
         document.getElementById('DefaultDomainSiteChecks').removeAttribute("style")
         document.getElementById('PrimaryDomainSiteChecks').removeAttribute("style")
         document.getElementById('DefaultDomainSiteChecks').setAttribute('style', 'display: inline;');
         document.getElementById('PrimaryDomainSiteChecks').setAttribute('style', 'display: inline;');
+
+        //Creating all 6 links for site Checks
+        //MWP1 Pod Check
+        MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
+        MWP1_CHECK.text = MWP1_CHECK.href;
+        //HTTPD1 Pod Check
+        HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+        HTTPD1_CHECK.text = HTTPD1_CHECK.href;
+        //PHP1 Pod Check
+        PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
+        PHP1_CHECK.text = PHP1_CHECK.href;
+        //MWP2 Pod Check
+        MWP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_check__');
+        MWP2_CHECK.text = MWP2_CHECK.href;
+        //HTTPD2 Pod Check
+        HTTPD2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+        HTTPD2_CHECK.text = HTTPD2_CHECK.href;
+        //PHP2 Pod Check
+        PHP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_php_check__');
+        PHP2_CHECK.text = PHP2_CHECK.href;
     }
 
 //The following are all event listeners looking for box checks. When checked it will append to the parsing form. 
@@ -126,17 +168,3 @@ PARSE_BUTTON.addEventListener("click", function(){
     });
 
 });
-
-
-//Contant Template For Reference 
-//#### MWP 2.0 Assistance Request ####
-
-//Customer Number:
-
-//siteID:
-
-//Default Domain:
-
-//Primary Domain:
-
-//Request:
