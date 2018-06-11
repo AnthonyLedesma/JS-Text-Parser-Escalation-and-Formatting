@@ -1,6 +1,8 @@
 # JS-Text-Parser---Escalation-and-Formatting
 Demo content for account escalations. Intend to pull out only necessary information for quick account information gathering.
 
+JS File does not have real API URL for slack.
+
 
 ![Template Generator](/screenShot.png?raw=true "Template Generator")
 
