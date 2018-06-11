@@ -12,7 +12,7 @@ Still Needed:
 
 -Automated SiteChecks with API
 
--Logging of Events For Issue Tracking.
+
 
 
 Integration Into Confluence - Requirements and Notes
