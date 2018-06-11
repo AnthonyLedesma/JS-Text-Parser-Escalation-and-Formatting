@@ -5,104 +5,91 @@
     
     <title>JS Txt Parser</title>
   </head>
+<body>
+ <!--
+If testing this page outside of confluence, add the following lines to load UIKit styling
+-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/css/uikit.min.css" />
 
-  <style>
-      * {
-          box-sizing: border-box;
-      }
-      
-      /* Create two equal columns that floats next to each other */
-      .column {
-          float: left;
-          width: 50%;
-          padding: 10px;
-      }
-      
-      /* Clear floats after the columns */
-      .row:after {
-          content: "";
-          display: table;
-          clear: both;
-      }
-      
-      /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-      @media screen and (max-width: 600px) {
-          .column {
-              width: 100%;
-          }
-      }
-  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/js/uikit-icons.min.js"></script>
 
-  <body>
-      <button id="parseButton">Parse</button>
-      <button id="resetButton">Reset / Clear</button>
-      <div class="row">
-        <div class="column">
-          <p>What is the issue being reported?</p>
-          <textarea style="width: 100%; height: 122px" id="requestBox">MYH Backups not recording. Attempted fix by reinstall Worker Plugin. Site Checks Pass.</textarea>
-        </div>
-        <div class="column">
-          <P>Pro Tip: Click Links With Middle Mouse Button</P>
-          <li><a id='MWP1' target='_blank'></a></li>
-          <li><a id='HTTPD1' target='_blank'></a></li>
-          <li><a id='PHP1' target='_blank'></a></li>
-          <li><a id='MWP2' target='_blank'></a></li>
-          <li><a id='HTTPD2' target='_blank'></a></li>
-          <li><a id='PHP2' target='_blank'></a></li>
-        </div>
-      </div>
-      <div class="row">
-        <div id="DefaultDomainSiteChecks" style="display: none;">
-          <p>Default Domain Site Checks:</p>
-          <label><input id="DefaultMWP2Check" type="checkbox">MWP2 Check Passed?</label>
-          <label><input id="DefaultHTTPDCheck" type="checkbox">HTTPD Check Passed?</label>
-          <label><input id="DefaultPHPCheck" type="checkbox">PHP Check Passed?</label>
-        </div>
-      </div>
-      <div class="row">
-        <div id="PrimaryDomainSiteChecks" style="display: none;">
-          <p>Primary Domain Site Checks:</p>
-          <label><input id="PrimaryMWP2Check" type="checkbox">MWP2 Check Passed?</label>
-          <label><input id="PrimaryHTTPDCheck" type="checkbox">HTTPD Check Passed?</label>
-          <label><input id="PrimaryPHPCheck" type="checkbox">PHP Check Passed?</label>
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="column">
-          <p>Paste the agent toolkit information here. ( all of it will be fine.)</p>
-          <textarea style="width: 100%; height: 250px" id="pasteBox">OverviewDiagnosticsTools
-        Place Holders
-        #123456789
-        
-        ACCOUNT
-        
-        Account Status
-        Active
-        Account creation date
-        10/27/2017, 12:08 PM
-        Account ID
-        22222222-b333-1444-8555-366666666666
-        Sites in account
-        1
-        PROD SITE
-        
-        Site ID
-        311a1w1d-1000-4999-a888-877777777777
-        Default Domain
-        https://abc.xyz.godaddywp.com
-        Primary Domain
-        https://xyz.abc.godaddywp.com
-        BASIC ACTIONS
-        
-        Internal SFTP/SSH User
-        Create an internal user to access SFTP/SSH.</textarea>
-        </div>
-        <div class="column">
-          <p>Formatted Text Will Appear Here</p>
-          <textarea id="resultBox" style="width: 100%; height: 250px" placeholder="Parse Text First. Content Will Be Generated..."></textarea>
-        </div>
-      </div>
+<!-- Use the scoped UIKit installed in PACT confluence -->
+<div class="uk-scope">
+	
+	<!-- Setup grid without borders, arranged into columns when medium width -->
+	<div class="uk-grid-collapse uk-child-width-expand@m" uk-grid>
+
+		<!-- Grid Section with standard padding added, main input content -->
+		<div class="uk-padding">
+			<h4>Escalation info</h4>
+			<!-- Form with labels on top of controls -->
+			<form class="uk-form-stacked">
+				<!-- Request box form section-->
+				<div class="uk-margin">
+					<label class="uk-form-label" for="requestBox">What is the issue being reported?</label>
+					<div class="uk-form-controls">
+						<input class="uk-input" id="requestBox" type="text" placeholder="MYH Backups not recording. Attempted fix by reinstall Worker Plugin. Site Checks Pass.">
+					</div>
+				</div>
+				<!-- Paste box form section -->
+				<div class="uk-margin">
+					<label class="uk-form-label" for="pasteBox">Paste the agent toolkit information here (all of it will be fine)</label>
+					<div class="uk-form-controls">
+						<textarea class="uk-textarea" rows="5" id="pasteBox" type="text" placeholder="Paste here"></textarea>
+					</div>
+				</div>
+			</form>					
+			<!-- Parse and reset buttons need to be outside of form -->
+			<div class="uk-margin" uk-margin>
+				<button id="parseButton" class="uk-button uk-button-primary">Parse</button>
+				<button id="resetButton" class="uk-button uk-button-default">Reset / Clear</button>
+			</div>
+			<!-- Site checks link section -->
+			<div id="DefaultDomainSiteChecks" style="display: none;">
+				<div id="DefaultDomainSiteChecks" class="uk-card uk-card-default uk-card-body uk-text-break uk-animation-slide-top">
+					<h5 class="uk-card-title">Site checks</h5>
+					<p>Click links with middle mouse button, then check the boxes with any tests that passed below to add to form</p>
+					<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+						<div>
+							<h6 class="uk-text-uppercase uk-text-center">Default domain</h6>
+							<ul class="uk-list uk-list-divider">
+								<li><a id='MWP1' target='_blank'></a><br/>
+								<label><input id="DefaultMWP2Check" class="uk-checkbox" type="checkbox">MWP2 check passed</label></li>
+								<li><a id='HTTPD1' target='_blank'></a><br/>
+								<label><input id="DefaultHTTPDCheck" class="uk-checkbox" type="checkbox">HTTPD check passed</label></li>
+								<li><a id='PHP1' target='_blank'></a><br/>
+								<label><input id="DefaultPHPCheck" class="uk-checkbox" type="checkbox">PHP check passed</label></li>
+							</ul>
+						</div>
+						<div id="PrimaryDomainSiteChecks" style="display: none;">
+							<h6 class="uk-text-uppercase uk-text-center">Primary domain</h6>
+							<ul class="uk-list uk-list-divider">
+								<li><a id='MWP2' target='_blank'></a><br/>
+								<label><input id="PrimaryMWP2Check" class="uk-checkbox" type="checkbox">MWP2 check passed</label></li>
+								<li><a id='HTTPD2' target='_blank'></a><br/>
+								<label><input id="PrimaryHTTPDCheck" class="uk-checkbox" type="checkbox">HTTPD check passed</label></li>
+								<li><a id='PHP2' target='_blank'></a><br/>
+								<label><input id="PrimaryPHPCheck" class="uk-checkbox" type="checkbox">PHP check passed</label></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grid section with standard padding and gray background, output content -->
+		<div class="uk-background-muted uk-padding">
+			<h4>TL contact form</h4>
+			<p>Copy this info and paste into TL chat</p>
+			<textarea id="resultBox" class="uk-textarea" rows="20" placeholder="Parse Text First. Content Will Be Generated..."></textarea>
+		</div>
+	</div>
+
+</div>
+
+
   </body>
   <footer>
       <script type='text/javascript' src='./TextParserJS.js'></script>
