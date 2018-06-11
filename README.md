@@ -1,23 +1,16 @@
 # JS-Text-Parser---Escalation-and-Formatting
 Demo content for account escalations. Intend to pull out only necessary information for quick account information gathering.
 
-Properly pulling default and primary domains, Site ID, Customer Number and formatting in pre-selected template. 
 
-Added ability to add recursive site info to the template.
-
-Added default and primary domain name comparison to help with site check comparison.
-
-Working testing model can now be found on Pact Confluence Home Page.
-
-Added URL Links for specific site checks. 
+![Template Generator](/screenShot.png?raw=true "Template Generator")
 
 
 
 Still Needed:
 
--CSS Style
+-Automated SiteChecks with API
 
--Extraction of site checks (need demo data) to place within template.
+-Logging of Events For Issue Tracking.
 
 
 Integration Into Confluence - Requirements and Notes
@@ -28,4 +21,4 @@ Integration Into Confluence - Requirements and Notes
 
 -Must also strip out document declaration, footer, and header from Git hosted index.html version as these are over-ridden/conflict on Confluence.
 
--A small section for style appears in both the HTML document and should be embeded within Confluence the same way.
+-Near the top of the index.html file is code to emport UI-Kit stylesheets from CDN. These should be commented out when importing on Confluence.
