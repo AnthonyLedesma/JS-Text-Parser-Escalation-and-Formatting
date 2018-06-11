@@ -6,6 +6,10 @@ var RESET_BUTTON = document.getElementById('resetButton');
 var REQUEST_BOX = document.getElementById('requestBox');
 var LINK_BOX = document.getElementById('linkBox');
 
+//Variables to enable slack issue tracker.
+var SUBMIT_SLACK_BUTTON = document.getElementById('SubmitSlack');
+var SLACK_P_TAG = document.getElementById('slackPTag');
+var SLACK_BOX = document.getElementById('slackBox');
 
 var DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
 var DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
@@ -43,7 +47,8 @@ PARSE_BUTTON.addEventListener("click", function(){
     //Splitting long string into array by first splitting new lines. 
     ORIGIN_ARRAY = PASTE_BOX.value.split("\n");
     RESULT_ARRAY = []; // Result array will contain escalation details. 
-    RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####'); //Start of template
+    console.log(RESULT_ARRAY);
+    RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####\n'); //Start of template
 
     for(let x in ORIGIN_ARRAY){//First remove all white spaces and set results to ORIGIN_ARRAY.
         let WHITE_SPACE_REMOVER = ORIGIN_ARRAY[x].replace(/^\s+/i, '');
@@ -54,7 +59,7 @@ PARSE_BUTTON.addEventListener("click", function(){
         if (ORIGIN_ARRAY[x].match(/^https:\/\/[^/]+/i) != null){ //Urls Matching
 
             //The following will alternate default and primary domain names respectively.
-            DEFAULT_OR_PRIMARY == 0 ? RESULT_ARRAY.push("Default Domain: " + ORIGIN_ARRAY[x]) : RESULT_ARRAY.push("Primary Domain: " + ORIGIN_ARRAY[x]);
+            DEFAULT_OR_PRIMARY == 0 ? RESULT_ARRAY.push("Default Domain: " + ORIGIN_ARRAY[x] + '\n') : RESULT_ARRAY.push("Primary Domain: " + ORIGIN_ARRAY[x] + '\n');
 
             //The following will allow for proper recursion on a paste including several website domains. 
             DEFAULT_OR_PRIMARY == 0 ? DEFAULT_DOMAIN_VALUE = ORIGIN_ARRAY[x] : PRIMARY_DOMAIN_VALUE = ORIGIN_ARRAY[x]; //Setting the values of domain for use with site checks.
@@ -64,20 +69,21 @@ PARSE_BUTTON.addEventListener("click", function(){
         if (ORIGIN_ARRAY[x].match(/Site ID/i) != null){ //Using Increment to pull adjacent array value.
             let INDEX = x;// Not able to increment x within for look so setting temporary index.
             INDEX++;
-            RESULT_ARRAY.push("Site ID: " + ORIGIN_ARRAY[INDEX]);
+            RESULT_ARRAY.push("Site ID: " + ORIGIN_ARRAY[INDEX] + '\n');
         }
 
         if (ORIGIN_ARRAY[x].match(/^\#(\d+)/) != null) { //Pull Customer number and remove the #
             let CUSTOMER_NUM = ORIGIN_ARRAY[x];
-            RESULT_ARRAY.push("Customer Number: " + CUSTOMER_NUM.substr(1)); //remove # character
+            RESULT_ARRAY.push("Customer Number: " + CUSTOMER_NUM.substr(1) + '\n'); //remove # character
 
         }
     }
-    RESULT_ARRAY.push("Request: " + REQUEST_BOX.value);//alter value to end of each array itteration.
+    //RESULT_ARRAY.push("\n");//
+    RESULT_ARRAY.push("\nRequest: " + REQUEST_BOX.value + '\n');//alter value to end of each array itteration.
     DEFAULT_OR_PRIMARY = 0; //Reset to 0 for next toolkit paste.
     if (REQUEST_BOX.value != '' && PASTE_BOX.value != ''){//Confirm that values exist
         for(let x in RESULT_ARRAY) { //Print to the results box. Increment through Result Array.
-            RESULT_BOX.value = RESULT_BOX.value + '\n' + RESULT_ARRAY[x];//Iterate each key and value
+            RESULT_BOX.value = RESULT_BOX.value + RESULT_ARRAY[x];//Iterate each key and value
             //RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
         }
         RESULT_BOX.value = RESULT_BOX.value + ('\n');//Adding linebreaks for easy reading.
@@ -89,6 +95,10 @@ PARSE_BUTTON.addEventListener("click", function(){
             //The next 2 lines are to display hidden row for default domain site checks
             DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
             DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
+
+            //If data is present we will allow the slack button to be clicked.
+            ToggleSubmitToSlackButton();
+            CleanSlackPosting();//To fill slack content box for issue tracker template
 
             if(DEFAULT_DOMAIN_VALUE != ''){//If to prevent strange results after reset.
                 //Creating only 3 links for site checks
@@ -108,6 +118,10 @@ PARSE_BUTTON.addEventListener("click", function(){
             PRIMARY_DOMAIN_HIDDEN_ROW.removeAttribute("style")
             DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
             PRIMARY_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
+
+            //If data is present we will allow the slack button to be clicked.
+            ToggleSubmitToSlackButton();
+            CleanSlackPosting();//To fill slack content box for issue tracker template
 
             if(DEFAULT_DOMAIN_VALUE != '' && PRIMARY_DOMAIN_VALUE != ''){//If to prevent strange results    after reset.
                 //Creating all 6 links for site Checks
@@ -134,6 +148,18 @@ PARSE_BUTTON.addEventListener("click", function(){
     }//End of if statement to confirm values.
 });
 
+//After existing content checks, this function will remove the hidden display tags and apply inline display.
+function ToggleSubmitToSlackButton(){
+    //Button Toggle
+    SUBMIT_SLACK_BUTTON.removeAttribute("style");
+    SUBMIT_SLACK_BUTTON.setAttribute("style", "display: inline;");
+    //p tag toggle
+    SLACK_P_TAG.removeAttribute("style");
+    SLACK_P_TAG.setAttribute("style", "display: inline;");
+    //result box toggle
+    SLACK_BOX.removeAttribute("style");
+    SLACK_BOX.setAttribute("style", "display: inline;");
+}
 
 //The following are all event listeners looking for box checks. When checked it will append to the parsing form. 
 //Would like to make checkbox generation dynamic based on domain names.
@@ -228,5 +254,54 @@ RESET_BUTTON.addEventListener('click', function() {
     PRIMARY_MWP2_CHECK.removeAttribute('disabled');PRIMARY_MWP2_CHECK.checked = false;
     PRIMARY_HTTPD_CHECK.removeAttribute('disabled');PRIMARY_HTTPD_CHECK.checked = false;
     PRIMARY_PHP_CHECK.removeAttribute('disabled');PRIMARY_PHP_CHECK.checked = false;
-
+    //Hiding the Submit Slack Button
+    SUBMIT_SLACK_BUTTON.removeAttribute("style");
+    SUBMIT_SLACK_BUTTON.setAttribute("style", "display: none;");
+    //p tag toggle
+    SLACK_P_TAG.removeAttribute("style");
+    SLACK_P_TAG.setAttribute("style", "display: none;");
+    //result box toggle
+    SLACK_BOX.removeAttribute("style");
+    SLACK_BOX.setAttribute("style", "display: none;");
 });
+
+function CleanSlackPosting(){
+    let INSENSITIVE_SLACK_ARRAY = [];
+    let SENSITIVE_SLACK_ARRAY = RESULT_BOX.value.split("\n");
+    INSENSITIVE_SLACK_ARRAY.push("`#### MWP 2.0 Issue Tracker ####`\n");
+    
+    for(let x in SENSITIVE_SLACK_ARRAY){//Now that we have a clean array without whitespace we can pull out content.
+        if (SENSITIVE_SLACK_ARRAY[x].match(/Site ID: [^/]+/i) != null){ //Pull the SiteID
+            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n') 
+        }
+        if (SENSITIVE_SLACK_ARRAY[x].match(/Default Domain: [^]+/i) != null){ //Pull Default Domain
+            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n');
+        }
+        if (SENSITIVE_SLACK_ARRAY[x].match(/Primary Domain: [^]+/) != null) { //Pull Primary Domain
+            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n'); 
+        }
+        if (SENSITIVE_SLACK_ARRAY[x].match(/Request: [^]+/) != null) { //Pull the request
+            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n'); 
+        }
+    }
+    for(let x in INSENSITIVE_SLACK_ARRAY){
+        SLACK_BOX.value = SLACK_BOX.value += INSENSITIVE_SLACK_ARRAY[x];
+    }
+}
+
+SUBMIT_SLACK_BUTTON.addEventListener( "click", function() {
+    console.log();
+    var url = "HTTPS://ThisIsAPlaceHolderURL.coms";
+    var text = SLACK_BOX.value;
+    $.ajax({data: 'payload=' + JSON.stringify({
+        "text": text
+    }),
+    dataType: 'json',
+    processData: false,
+    type: 'POST',
+    url: url
+    });  
+    SUBMIT_SLACK_BUTTON.setAttribute('disabled', 'disabled');
+});  
+
+

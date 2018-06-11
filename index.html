@@ -9,7 +9,14 @@
  <!--
 If testing this page outside of confluence, add the following lines to load UIKit styling
 -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/css/uikit.min.css" />
+
+<script
+			  src="https://code.jquery.com/jquery-3.3.1.js"
+			  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+			  crossorigin="anonymous"></script>
+
+<link rel="stylesheet" 
+href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/css/uikit.min.css" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/js/uikit.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/js/uikit-icons.min.js"></script>
@@ -44,7 +51,8 @@ If testing this page outside of confluence, add the following lines to load UIKi
 			<!-- Parse and reset buttons need to be outside of form -->
 			<div class="uk-margin" uk-margin>
 				<button id="parseButton" class="uk-button uk-button-primary">Parse</button>
-				<button id="resetButton" class="uk-button uk-button-default">Reset / Clear</button>
+        <button id="resetButton" class="uk-button uk-button-default">Reset / Clear</button>
+        <button id="SubmitSlack"class="uk-button uk-button-danger" style="display: none;">Submit To Slack</button>
 			</div>
 			<!-- Site checks link section -->
 			<div id="DefaultDomainSiteChecks" style="display: none;">
@@ -83,15 +91,17 @@ If testing this page outside of confluence, add the following lines to load UIKi
 		<div class="uk-background-muted uk-padding">
 			<h4>TL contact form</h4>
 			<p>Copy this info and paste into TL chat</p>
-			<textarea id="resultBox" class="uk-textarea" rows="20" placeholder="Parse Text First. Content Will Be Generated..."></textarea>
+      <textarea id="resultBox" class="uk-textarea" rows="15" placeholder="Parse Text First. Content Will Be Generated..."></textarea>
+      <p id="slackPTag" style="display: none;">Hit 'SUBMIT TO SLACK' To Track This Issue In #PlaceHolderChannel.</p>
+			<textarea id="slackBox" class="uk-textarea" rows="7" placeholder="Issue Tracker Text. Parse First..." disabled="disabled" style="display: none;"></textarea>
 		</div>
 	</div>
 
 </div>
 
-
   </body>
   <footer>
       <script type='text/javascript' src='./TextParserJS.js'></script>
+      
   </footer>
 </html>
