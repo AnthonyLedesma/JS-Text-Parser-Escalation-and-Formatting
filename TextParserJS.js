@@ -1,23 +1,23 @@
 //Variables Declared first to minimize DOM calls. 
-var PASTE_BOX = document.getElementById('pasteBox');
-var RESULT_BOX = document.getElementById('resultBox');
-var PARSE_BUTTON = document.getElementById('parseButton');
-var RESET_BUTTON = document.getElementById('resetButton');
-var REQUEST_BOX = document.getElementById('requestBox');
-var LINK_BOX = document.getElementById('linkBox');
+let PASTE_BOX = document.getElementById('pasteBox');
+let RESULT_BOX = document.getElementById('resultBox');
+let PARSE_BUTTON = document.getElementById('parseButton');
+let RESET_BUTTON = document.getElementById('resetButton');
+let REQUEST_BOX = document.getElementById('requestBox');
+let LINK_BOX = document.getElementById('linkBox');
 
 //Variables to enable slack issue tracker.
-var SUBMIT_SLACK_BUTTON = document.getElementById('SubmitSlack');
-var SLACK_P_TAG = document.getElementById('slackPTag');
-var SLACK_BOX = document.getElementById('slackBox');
+let SUBMIT_SLACK_BUTTON = document.getElementById('SubmitSlack');
+let SLACK_P_TAG = document.getElementById('slackPTag');
+let SLACK_BOX = document.getElementById('slackBox');
 
-var DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
-var DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
-var PRIMARY_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
+let DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
+let DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
+let PRIMARY_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
 
 //These variables call the by-default hidden rows for site check confirmation
-var DEFAULT_DOMAIN_HIDDEN_ROW = document.getElementById('DefaultDomainSiteChecks');
-var PRIMARY_DOMAIN_HIDDEN_ROW = document.getElementById('PrimaryDomainSiteChecks');
+let DEFAULT_DOMAIN_HIDDEN_ROW = document.getElementById('DefaultDomainSiteChecks');
+let PRIMARY_DOMAIN_HIDDEN_ROW = document.getElementById('PrimaryDomainSiteChecks');
 
 //All tied to generation of Site Check links for manual testing. Default First. 
 let DEFAULT_MWP2_CHECK = document.getElementById('DefaultMWP2Check');
@@ -28,17 +28,22 @@ let PRIMARY_MWP2_CHECK = document.getElementById('PrimaryMWP2Check');
 let PRIMARY_HTTPD_CHECK = document.getElementById('PrimaryHTTPDCheck');
 let PRIMARY_PHP_CHECK = document.getElementById('PrimaryPHPCheck');
 
- //Declaring Varaibles to hold Links DOM elements. 1 = default domain & 2 = primary domain.
- let MWP1_CHECK = document.getElementById('MWP1');
- let HTTPD1_CHECK = document.getElementById('HTTPD1');
- let PHP1_CHECK = document.getElementById('PHP1');
- //primary domain now
- let MWP2_CHECK = document.getElementById('MWP2');
- let HTTPD2_CHECK = document.getElementById('HTTPD2');
- let PHP2_CHECK = document.getElementById('PHP2');
+//Declaring Varaibles to hold Links DOM elements. 1 = default domain & 2 = primary domain.
+let MWP1_CHECK = document.getElementById('MWP1');
+let HTTPD1_CHECK = document.getElementById('HTTPD1');
+let PHP1_CHECK = document.getElementById('PHP1');
+//primary domain now
+let MWP2_CHECK = document.getElementById('MWP2');
+let HTTPD2_CHECK = document.getElementById('HTTPD2');
+let PHP2_CHECK = document.getElementById('PHP2');
 
- let ORIGIN_ARRAY = []; // Global Origin Array will have values set after parse button click.
- let RESULT_ARRAY = []; // Result array will contain escalation details. 
+let ORIGIN_ARRAY = []; // Global Origin Array will have values set after parse button click.
+let RESULT_ARRAY = []; // Result array will contain escalation details. 
+let INSENSITIVE_SLACK_ARRAY = []; //Slack escalation array - ready to push
+let SENSITIVE_SLACK_ARRAY = []; //Escalation array which still contains sensitive infomration. 
+
+//Defining API test call button.
+let TEST_API_BUTTON = document.getElementById('TestAPI');
 
 //3 top level event listeners [ParseButton, ResetButton, Checkbox Listeners]
 //Parse button click events.
@@ -146,6 +151,7 @@ PARSE_BUTTON.addEventListener("click", function(){
             }//Preventing strange results after reset. end
         }//Close of else if statment.
     }//End of if statement to confirm values.
+    PARSE_BUTTON.setAttribute('disabled', 'disabled');
 });
 
 //After existing content checks, this function will remove the hidden display tags and apply inline display.
@@ -263,25 +269,41 @@ RESET_BUTTON.addEventListener('click', function() {
     //result box toggle
     SLACK_BOX.removeAttribute("style");
     SLACK_BOX.setAttribute("style", "display: none;");
+    SLACK_BOX.value = '';
+    //Reset Slack arrays
+    INSENSITIVE_SLACK_ARRAY = [];
+    SENSITIVE_SLACK_ARRAY = [];
+    //Finally re-enable parse button.
+    PARSE_BUTTON.removeAttribute('disabled');
 });
 
+//Function will take parsed information of Results Box and create into Array split on new lines.
+//From there function will filter out only the needed information and inject Slack markup (`)
 function CleanSlackPosting(){
-    let INSENSITIVE_SLACK_ARRAY = [];
-    let SENSITIVE_SLACK_ARRAY = RESULT_BOX.value.split("\n");
-    INSENSITIVE_SLACK_ARRAY.push("`#### MWP 2.0 Issue Tracker ####`\n");
+    INSENSITIVE_SLACK_ARRAY = [];
+    SENSITIVE_SLACK_ARRAY = RESULT_BOX.value.split("\n");
+    INSENSITIVE_SLACK_ARRAY.push("#### MWP 2.0 Issue Tracker ####\n");
     
     for(let x in SENSITIVE_SLACK_ARRAY){//Now that we have a clean array without whitespace we can pull out content.
         if (SENSITIVE_SLACK_ARRAY[x].match(/Site ID: [^/]+/i) != null){ //Pull the SiteID
-            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n') 
+            let y = SENSITIVE_SLACK_ARRAY[x];
+            y = y.replace(':',': \`');
+            INSENSITIVE_SLACK_ARRAY.push(y + ' `\n') 
         }
         if (SENSITIVE_SLACK_ARRAY[x].match(/Default Domain: [^]+/i) != null){ //Pull Default Domain
-            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n');
+            let y = SENSITIVE_SLACK_ARRAY[x];
+            y = y.replace(':',': \`');
+            INSENSITIVE_SLACK_ARRAY.push(y + ' `\n');
         }
         if (SENSITIVE_SLACK_ARRAY[x].match(/Primary Domain: [^]+/) != null) { //Pull Primary Domain
-            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n'); 
+            let y = SENSITIVE_SLACK_ARRAY[x];
+            y = y.replace(':',': \`');
+            INSENSITIVE_SLACK_ARRAY.push(y + ' `\n'); 
         }
         if (SENSITIVE_SLACK_ARRAY[x].match(/Request: [^]+/) != null) { //Pull the request
-            INSENSITIVE_SLACK_ARRAY.push('`'+SENSITIVE_SLACK_ARRAY[x] + '`\n'); 
+            let y = SENSITIVE_SLACK_ARRAY[x];
+            y = y.replace('Request:','Situation: \`');
+            INSENSITIVE_SLACK_ARRAY.push(y + ' `\n'); 
         }
     }
     for(let x in INSENSITIVE_SLACK_ARRAY){
@@ -290,9 +312,8 @@ function CleanSlackPosting(){
 }
 
 SUBMIT_SLACK_BUTTON.addEventListener( "click", function() {
-    console.log();
-    var url = "HTTPS://ThisIsAPlaceHolderURL.coms";
-    var text = SLACK_BOX.value;
+    let url = "HTTPS://ThisIsAPlaceHolderURL.coms";
+    let text = SLACK_BOX.value;
     $.ajax({data: 'payload=' + JSON.stringify({
         "text": text
     }),
@@ -305,3 +326,16 @@ SUBMIT_SLACK_BUTTON.addEventListener( "click", function() {
 });  
 
 
+// TEST_API_BUTTON.addEventListener('click', function() {
+//     console.log('Test API Button Click');
+//     let url = "HTTPS://ThisIsAPlaceHolderURL.coms";
+//     let text = 'test text';
+//     $.ajax({data: 'payload=' + JSON.stringify({
+//         "text": text
+//     }),
+//     dataType: 'json',
+//     processData: false,
+//     type: 'POST',
+//     url: url
+//     }); 
+// });

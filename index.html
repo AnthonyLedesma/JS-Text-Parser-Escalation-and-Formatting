@@ -7,7 +7,7 @@
   </head>
 <body>
  <!--
-If testing this page outside of confluence, add the following lines to load UIKit styling
+If testing this page outside of confluence, add the following lines to load UIKit styling and jQuery
 -->
 
 <script
@@ -52,7 +52,11 @@ href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.5/css/uikit.min.css"
 			<div class="uk-margin" uk-margin>
 				<button id="parseButton" class="uk-button uk-button-primary">Parse</button>
         <button id="resetButton" class="uk-button uk-button-default">Reset / Clear</button>
-        <button id="SubmitSlack"class="uk-button uk-button-danger" style="display: none;">Submit To Slack</button>
+		<button id="SubmitSlack"class="uk-button uk-button-danger" style="display: none;">Submit To Slack</button>
+		
+		<!-- Button used for feature testing to connect to Swagger API -->
+		<!-- <button id="TestAPI"class="uk-button uk-button-default">Test API Call</button> -->
+
 			</div>
 			<!-- Site checks link section -->
 			<div id="DefaultDomainSiteChecks" style="display: none;">
