@@ -30,7 +30,6 @@ PARSE_BUTTON.addEventListener("click", function(){
     //Splitting long string into array by first splitting new lines. 
     ORIGIN_ARRAY = PASTE_BOX.value.split("\n");
     RESULT_ARRAY = []; // Result array will contain escalation details. 
-    console.log(RESULT_ARRAY);
     RESULT_ARRAY.push('#### MWP 2.0 Assistance Request ####\n'); //Start of template
 
     for(let x in ORIGIN_ARRAY){//First remove all white spaces and set results to ORIGIN_ARRAY.
