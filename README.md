@@ -7,6 +7,8 @@ JS File does not have real API URL for slack.
 ![Template Generator](/screenShot.png?raw=true "Template Generator")
 
 
+![Track The Issues](/screenShot2.png?raw=true "Track The Issues")
+
 
 Still Needed:
 
