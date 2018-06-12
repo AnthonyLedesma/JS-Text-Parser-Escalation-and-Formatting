@@ -15,28 +15,6 @@ let DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Doma
 let DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
 let PRIMARY_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
 
-//These variables call the by-default hidden rows for site check confirmation
-let DEFAULT_DOMAIN_HIDDEN_ROW = document.getElementById('DefaultDomainSiteChecks');
-let PRIMARY_DOMAIN_HIDDEN_ROW = document.getElementById('PrimaryDomainSiteChecks');
-
-//All tied to generation of Site Check links for manual testing. Default First. 
-let DEFAULT_MWP2_CHECK = document.getElementById('DefaultMWP2Check');
-let DEFAULT_HTTPD_CHECK = document.getElementById('DefaultHTTPDCheck');
-let DEFAULT_PHP_CHECK = document.getElementById('DefaultPHPCheck');
-//Primary Domain Site Checks.
-let PRIMARY_MWP2_CHECK = document.getElementById('PrimaryMWP2Check');
-let PRIMARY_HTTPD_CHECK = document.getElementById('PrimaryHTTPDCheck');
-let PRIMARY_PHP_CHECK = document.getElementById('PrimaryPHPCheck');
-
-//Declaring Varaibles to hold Links DOM elements. 1 = default domain & 2 = primary domain.
-let MWP1_CHECK = document.getElementById('MWP1');
-let HTTPD1_CHECK = document.getElementById('HTTPD1');
-let PHP1_CHECK = document.getElementById('PHP1');
-//primary domain now
-let MWP2_CHECK = document.getElementById('MWP2');
-let HTTPD2_CHECK = document.getElementById('HTTPD2');
-let PHP2_CHECK = document.getElementById('PHP2');
-
 let ORIGIN_ARRAY = []; // Global Origin Array will have values set after parse button click.
 let RESULT_ARRAY = []; // Result array will contain escalation details. 
 let INSENSITIVE_SLACK_ARRAY = []; //Slack escalation array - ready to push
@@ -97,62 +75,38 @@ PARSE_BUTTON.addEventListener("click", function(){
     //display only 3 or all 6 site check options.
     if (REQUEST_BOX.value != '' && PASTE_BOX.value != ''){//Confirm that values exist
         if (DEFAULT_DOMAIN_VALUE == PRIMARY_DOMAIN_VALUE && DEFAULT_DOMAIN_VALUE != '') {
-            //The next 2 lines are to display hidden row for default domain site checks
-            DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
-            DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
-
+            
             //If data is present we will allow the slack button to be clicked.
             ToggleSubmitToSlackButton();
             CleanSlackPosting();//To fill slack content box for issue tracker template
 
             if(DEFAULT_DOMAIN_VALUE != ''){//If to prevent strange results after reset.
-                //Creating only 3 links for site checks
-                //MWP1 Pod Check
-                MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
-                MWP1_CHECK.text = MWP1_CHECK.href;
-                //HTTPD1 Pod Check
-                HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
-                HTTPD1_CHECK.text = HTTPD1_CHECK.href;
-                //PHP1 Pod Check
-                PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
-                PHP1_CHECK.text = PHP1_CHECK.href;
+                //Perform 3 site checks on default only.
+                AutoApiChecker(DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
+                AutoApiChecker(DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+                AutoApiChecker(DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
             }//Preventing strange results after reset. end
         } else if (DEFAULT_DOMAIN_VALUE != '') {
-            //Next 4 lines are displaying the hidden rows for site check confirmation.
-            DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")
-            PRIMARY_DOMAIN_HIDDEN_ROW.removeAttribute("style")
-            DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
-            PRIMARY_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: inline;');
-
+        
             //If data is present we will allow the slack button to be clicked.
             ToggleSubmitToSlackButton();
             CleanSlackPosting();//To fill slack content box for issue tracker template
 
             if(DEFAULT_DOMAIN_VALUE != '' && PRIMARY_DOMAIN_VALUE != ''){//If to prevent strange results    after reset.
-                //Creating all 6 links for site Checks
-                //MWP1 Pod Check
-                MWP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
-                MWP1_CHECK.text = MWP1_CHECK.href;
-                //HTTPD1 Pod Check
-                HTTPD1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
-                HTTPD1_CHECK.text = HTTPD1_CHECK.href;
-                //PHP1 Pod Check
-                PHP1_CHECK.setAttribute('href', DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
-                PHP1_CHECK.text = PHP1_CHECK.href;
-                //MWP2 Pod Check
-                MWP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_check__');
-                MWP2_CHECK.text = MWP2_CHECK.href;
-                //HTTPD2 Pod Check
-                HTTPD2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_httpd_check__');
-                HTTPD2_CHECK.text = HTTPD2_CHECK.href;
-                //PHP2 Pod Check
-                PHP2_CHECK.setAttribute('href', PRIMARY_DOMAIN_VALUE + '/__mwp2_php_check__');
-                PHP2_CHECK.text = PHP2_CHECK.href;
+                //Perform all 6 site checks.
+                AutoApiChecker(DEFAULT_DOMAIN_VALUE + '/__mwp2_check__');
+                AutoApiChecker(DEFAULT_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+                AutoApiChecker(DEFAULT_DOMAIN_VALUE + '/__mwp2_php_check__');
+                AutoApiChecker(PRIMARY_DOMAIN_VALUE + '/__mwp2_check__');
+                AutoApiChecker(PRIMARY_DOMAIN_VALUE + '/__mwp2_httpd_check__');
+                AutoApiChecker(PRIMARY_DOMAIN_VALUE + '/__mwp2_php_check__');
+               
+                
             }//Preventing strange results after reset. end
-        }//Close of else if statment.
-    }//End of if statement to confirm values.
-    PARSE_BUTTON.setAttribute('disabled', 'disabled');
-});
+        }//Close of else if statment for default domain value
+        PARSE_BUTTON.setAttribute('disabled', 'disabled');//Must disable after content checks to prevent spam.
+    }//End of if statement to confirm values are properly entered. 
+});//End of button click event.
 
 //After existing content checks, this function will remove the hidden display tags and apply inline display.
 function ToggleSubmitToSlackButton(){
@@ -167,57 +121,7 @@ function ToggleSubmitToSlackButton(){
     SLACK_BOX.setAttribute("style", "display: inline;");
 }
 
-//The following are all event listeners looking for box checks. When checked it will append to the parsing form. 
-//Would like to make checkbox generation dynamic based on domain names.
-//Also seems reasonable to capture end of template locations per site so that we can ->
-//inject check passes directly into template at desired location. 
-//Finally I should consider a single event listener for all checkboxes.
-DEFAULT_MWP2_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.value = RESULT_BOX.value + '\n' + DEFAULT_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n';
-        DEFAULT_MWP2_CHECK.setAttribute('disabled', 'disabled');
 
-    }
-}); //Redundant event listeners are redundant. 
-
-DEFAULT_HTTPD_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.value = RESULT_BOX.value + '\n' + DEFAULT_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n';
-        DEFAULT_HTTPD_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-DEFAULT_PHP_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.value = RESULT_BOX.value + '\n' + DEFAULT_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n';
-        DEFAULT_PHP_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-PRIMARY_MWP2_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.value = RESULT_BOX.value + '\n' + PRIMARY_DOMAIN_VALUE + ' MWP2 Site Check Passed' + '\n';
-        PRIMARY_MWP2_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-PRIMARY_HTTPD_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.value = RESULT_BOX.value + '\n' + PRIMARY_DOMAIN_VALUE + ' HTTPD Site Check Passed' + '\n';
-        PRIMARY_HTTPD_CHECK.setAttribute('disabled', 'disabled');
-
-    }
-});
-
-PRIMARY_PHP_CHECK.addEventListener( 'change', function() {
-    if(this.checked) {
-        RESULT_BOX.value = RESULT_BOX.value + '\n' + PRIMARY_DOMAIN_VALUE + ' PHP Site Check Passed' + '\n';
-        PRIMARY_PHP_CHECK.setAttribute('disabled', 'disabled');
-    }
-});
 
 //When reset button is clicked we should reset form to empty. Final event listener in file
 //Elements to clear:
@@ -234,32 +138,12 @@ RESET_BUTTON.addEventListener('click', function() {
     REQUEST_BOX.innerText = '';
     REQUEST_BOX.textContent = '';
     REQUEST_BOX.value = '';
-    //Link text and href
-    MWP1_CHECK.removeAttribute('href');MWP1_CHECK.text = '';
-    MWP2_CHECK.removeAttribute('href');MWP2_CHECK.text = '';
-    HTTPD1_CHECK.removeAttribute('href');HTTPD1_CHECK.text = '';
-    HTTPD2_CHECK.removeAttribute('href');HTTPD2_CHECK.text = '';
-    PHP1_CHECK.removeAttribute('href');PHP1_CHECK.text = '';
-    PHP2_CHECK.removeAttribute('href');PHP2_CHECK.text = '';
     //Redeclare empty parsing arrays
     ORIGIN_ARRAY = []; // Global Origin Array will have values set after parse button click.
     RESULT_ARRAY = []; // Result array will contain escalation details. 
     //Empty default and primary domains.
     DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
     PRIMARY_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
-    //Checkbox Hide and Enable
-    DEFAULT_DOMAIN_HIDDEN_ROW.removeAttribute("style")//Remove inline styles
-    PRIMARY_DOMAIN_HIDDEN_ROW.removeAttribute("style")
-    DEFAULT_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: none;');
-    PRIMARY_DOMAIN_HIDDEN_ROW.setAttribute('style', 'display: none;');// RE-hiding the rows for proper reset.
-    //Now we reset checkbox disabled status
-    DEFAULT_MWP2_CHECK.removeAttribute('disabled');DEFAULT_MWP2_CHECK.checked = false;
-    DEFAULT_HTTPD_CHECK.removeAttribute('disabled');DEFAULT_HTTPD_CHECK.checked = false;
-    DEFAULT_PHP_CHECK.removeAttribute('disabled');DEFAULT_PHP_CHECK.checked = false;
-    //Primary Domain Site Checks.
-    PRIMARY_MWP2_CHECK.removeAttribute('disabled');PRIMARY_MWP2_CHECK.checked = false;
-    PRIMARY_HTTPD_CHECK.removeAttribute('disabled');PRIMARY_HTTPD_CHECK.checked = false;
-    PRIMARY_PHP_CHECK.removeAttribute('disabled');PRIMARY_PHP_CHECK.checked = false;
     //Hiding the Submit Slack Button
     SUBMIT_SLACK_BUTTON.removeAttribute("style");
     SUBMIT_SLACK_BUTTON.setAttribute("style", "display: none;");
@@ -280,11 +164,11 @@ RESET_BUTTON.addEventListener('click', function() {
 //Function will take parsed information of Results Box and create into Array split on new lines.
 //From there function will filter out only the needed information and inject Slack markup (`)
 function CleanSlackPosting(){
-    INSENSITIVE_SLACK_ARRAY = [];
-    SENSITIVE_SLACK_ARRAY = RESULT_BOX.value.split("\n");
+    INSENSITIVE_SLACK_ARRAY = [];//Global Variable is reset at this point
+    SENSITIVE_SLACK_ARRAY = RESULT_BOX.value.split("\n"); //Resetting global variable to use current results value.
     INSENSITIVE_SLACK_ARRAY.push("#### MWP 2.0 Issue Tracker ####\n");
     
-    for(let x in SENSITIVE_SLACK_ARRAY){//Now that we have a clean array without whitespace we can pull out content.
+    for(let x in SENSITIVE_SLACK_ARRAY){//Now we add Markup to existing content.
         if (SENSITIVE_SLACK_ARRAY[x].match(/Site ID: [^/]+/i) != null){ //Pull the SiteID
             let y = SENSITIVE_SLACK_ARRAY[x];
             y = y.replace(':',': \`');
@@ -311,6 +195,7 @@ function CleanSlackPosting(){
     }
 }
 
+//Function for Slack Submit button. Propagated with demo API URL in this public code.
 SUBMIT_SLACK_BUTTON.addEventListener( "click", function() {
     let url = "HTTPS://ThisIsAPlaceHolderURL.coms";
     let text = SLACK_BOX.value;
@@ -326,16 +211,28 @@ SUBMIT_SLACK_BUTTON.addEventListener( "click", function() {
 });  
 
 
-// TEST_API_BUTTON.addEventListener('click', function() {
-//     console.log('Test API Button Click');
-//     let url = "HTTPS://ThisIsAPlaceHolderURL.coms";
-//     let text = 'test text';
-//     $.ajax({data: 'payload=' + JSON.stringify({
-//         "text": text
-//     }),
-//     dataType: 'json',
-//     processData: false,
-//     type: 'POST',
-//     url: url
-//     }); 
-// });
+//Function is to be passed complete URL to Site Check locations. 
+//Values are passed after Parse Button Click > and values are confirmed to be URLs.
+function AutoApiChecker(SiteToCheck) {
+    let url = SiteToCheck;
+    fetch(url)
+    .then(function(response) {
+    console.log(response);
+    return response.ok;
+    
+    })
+    .then(function(respOK) {
+        if(respOK == true){
+            console.log("Site Checks Pass");
+            RESULT_BOX.value = RESULT_BOX.value + SiteToCheck + ' Reports: OK \n';
+            console.log("Response status: " + respOK);
+        } else {
+            RESULT_BOX.value = RESULT_BOX.value + SiteToCheck + ' Reports: FAIL \n';
+            console.log("Response status: " + respOK);
+        }
+    })
+    .catch(function(error) {
+        console.log('Site Check Failed - Network Error', error);
+        RESULT_BOX.value = RESULT_BOX.value + SiteToCheck + ' Reports: FAIL - Network Err \n';
+    });
+}
