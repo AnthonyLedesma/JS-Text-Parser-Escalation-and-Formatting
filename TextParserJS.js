@@ -11,7 +11,7 @@ let SUBMIT_SLACK_BUTTON = document.getElementById('SubmitSlack');
 let SLACK_P_TAG = document.getElementById('slackPTag');
 let SLACK_BOX = document.getElementById('slackBox');
 
-let DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. Top level for scope.
+let DEFAULT_OR_PRIMARY = 0; //Index 0 is default domian, Index 1 is Primary Domain. 
 let DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
 let PRIMARY_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
 
@@ -49,7 +49,7 @@ PARSE_BUTTON.addEventListener("click", function(){
         }
 
         if (ORIGIN_ARRAY[x].match(/Site ID/i) != null){ //Using Increment to pull adjacent array value.
-            let INDEX = x;// Not able to increment x within for look so setting temporary index.
+            let INDEX = x;// Not able to increment x within for loop so setting temporary index.
             INDEX++;
             RESULT_ARRAY.push("Site ID: " + ORIGIN_ARRAY[INDEX] + '\n');
         }
@@ -60,13 +60,11 @@ PARSE_BUTTON.addEventListener("click", function(){
 
         }
     }
-    //RESULT_ARRAY.push("\n");//
     RESULT_ARRAY.push("\nRequest: " + REQUEST_BOX.value + '\n');//alter value to end of each array itteration.
     DEFAULT_OR_PRIMARY = 0; //Reset to 0 for next toolkit paste.
     if (REQUEST_BOX.value != '' && PASTE_BOX.value != ''){//Confirm that values exist
         for(let x in RESULT_ARRAY) { //Print to the results box. Increment through Result Array.
             RESULT_BOX.value = RESULT_BOX.value + RESULT_ARRAY[x];//Iterate each key and value
-            //RESULT_BOX.append('\n');//Adding linebreaks for easy reading.
         }
         RESULT_BOX.value = RESULT_BOX.value + ('\n');//Adding linebreaks for easy reading.
     }//End of values exist confirmation.
@@ -124,7 +122,7 @@ function ToggleSubmitToSlackButton(){
 
 //When reset button is clicked we should reset form to empty. Final event listener in file
 //Elements to clear:
-//PasteBox - ResultBox - RequestBox - Link text and href - Checkbox hide and enable.
+//PasteBox - ResultBox - RequestBox.
 //Reset arrays and DefaultDomain and PrimaryDomain variables.
 RESET_BUTTON.addEventListener('click', function() {
     //PasteBox
@@ -143,12 +141,11 @@ RESET_BUTTON.addEventListener('click', function() {
     //Empty default and primary domains.
     DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
     PRIMARY_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
-    //Hiding the Submit Slack Button
-    SUBMIT_SLACK_BUTTON.removeAttribute("style");
-    SUBMIT_SLACK_BUTTON.setAttribute("style", "display: none;");
-    //p tag toggle
-    SLACK_P_TAG.removeAttribute("style");
-    SLACK_P_TAG.setAttribute("style", "display: none;");
+    
+    SUBMIT_SLACK_BUTTON.removeAttribute("style");//Hiding the Submit Slack Button
+    SUBMIT_SLACK_BUTTON.setAttribute("style", "display: none;");//Hiding the Submit Slack Button
+    SLACK_P_TAG.removeAttribute("style");//p tag toggle
+    SLACK_P_TAG.setAttribute("style", "display: none;");//p tag toggle
     //result box toggle
     SLACK_BOX.removeAttribute("style");
     SLACK_BOX.setAttribute("style", "display: none;");
@@ -194,22 +191,6 @@ function CleanSlackPosting(){
     }
 }
 
-//Function for Slack Submit button. Propagated with demo API URL in this public code.
-SUBMIT_SLACK_BUTTON.addEventListener( "click", function() {
-    let url = "HTTPS://ThisIsAPlaceHolderURL.coms";
-    let text = SLACK_BOX.value;
-    $.ajax({data: 'payload=' + JSON.stringify({
-        "text": text
-    }),
-    dataType: 'json',
-    processData: false,
-    type: 'POST',
-    url: url
-    });  
-    SUBMIT_SLACK_BUTTON.setAttribute('disabled', 'disabled');
-});  
-
-
 //Function is to be passed complete URL to Site Check locations. 
 //Values are passed after Parse Button Click > and values are confirmed to be URLs.
 function AutoApiChecker(SiteToCheck) {
@@ -235,3 +216,21 @@ function AutoApiChecker(SiteToCheck) {
         RESULT_BOX.value = RESULT_BOX.value + SiteToCheck + ' Reports: FAIL - Network Err \n';
     });
 }
+
+
+//Function for Slack Submit button. Propagated with demo API URL in this public code.
+SUBMIT_SLACK_BUTTON.addEventListener( "click", function() {
+    let url = "HTTPS://ThisIsAPlaceHolderURL.coms";
+    let text = SLACK_BOX.value;
+    $.ajax({data: 'payload=' + JSON.stringify({
+        "text": text
+    }),
+    dataType: 'json',
+    processData: false,
+    type: 'POST',
+    url: url
+    });  
+    SUBMIT_SLACK_BUTTON.setAttribute('disabled', 'disabled');
+});  
+
+
