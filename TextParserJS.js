@@ -17,7 +17,9 @@ let sensitiveSlackArray = []; //Escalation array which still contains sensitive 
 //3 top level event listeners [ParseButton, ResetButton, Checkbox Listeners]
 //Parse button click events.
 parseButton.addEventListener("click", function(){
+    //The following will check for no values in form and will return click event if no values exist.
     if (!SafeToPrintResultsBox()){return;}
+    resultBox.value = ''; //Setting to clear with each parse click. 
     // ** Breaking the regexes out into variables for readability / scalability
     const urlRegex = /^https:\/\/[^/]+/i;
     const customerNumberRegex = /^\#(\d+)/;
