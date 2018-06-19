@@ -1,3 +1,21 @@
+/*
+|--------------------------------------------------------------------------
+| PACT - Escalation Tool and Issue tracker
+|--------------------------------------------------------------------------
+|
+| Escalation Tool used by Pro Advanced Care Team is intented to save time,
+| and allow for rapid escalations. Tool is responsible for automating 
+| Site Checks for domains and formatting escalation text based on Agent
+| Toolkit data. 
+|
+| For the brave souls who get this far: You are the chosen ones,
+| the valiant knights of programming who toil away, without rest,
+| fixing the most awful code. To you, true saviors, kings of men,
+| I say this: never gonna give you up, never gonna let you down,
+| never gonna run around and desert you. Never gonna make you cry,
+| never gonna say goodbye. Never gonna tell a lie and hurt you.
+*/
+
 //Variables Declared first to minimize DOM calls. 
 const pasteBox = document.getElementById('pasteBox');
 const resultBox = document.getElementById('resultBox');
@@ -14,8 +32,11 @@ let insensitiveSlackArray = []; //Slack escalation array - ready to push
 let sensitiveSlackArray = []; //Escalation array which still contains sensitive infomration. 
 
 
-//3 top level event listeners [ParseButton, ResetButton, Checkbox Listeners]
-//Parse button click events.
+/* Majority of functionality is tied to click event for parse button.
+We start with content checking, setting a few scoped variables then -
+we begin parsing agent given content and set into arrays.
+Also part of this event listener will be integrated logic to prevent 
+obvious mis-use, spam, or buggy results. */
 parseButton.addEventListener("click", function(){
     //The following will check for no values in form and will return click event if no values exist.
     if (!SafeToPrintResultsBox()){return;}
@@ -30,6 +51,15 @@ parseButton.addEventListener("click", function(){
     resultArray = []; // Result array will contain escalation details. 
     resultArray.push('#### MWP 2.0 Assistance Request ####\n'); //Start of template
 
+    /* Within forEach we first remove WhiteSpace.
+    We then parse for domains using urlRegex and count them. 
+    urlFound count prevents more or less then two domains.
+    Site ID match to pull out SiteID from parsing form and place into array.
+    extract customer number and remove superflous characters.
+    show visible error on results box and partially reset the form.
+    SafeToPrintResultsBox(), NoEmptyValuesExist(), SubmissionEnabler
+    call either DefaultDomainOnly() or DefaulyAndPrimaryDomains() based on content.
+     */
     originArray.forEach(function(element, index, arr) {
        element = element.replace(/^\s+/i, '');
         if(element.match(urlRegex)) {
@@ -53,7 +83,7 @@ parseButton.addEventListener("click", function(){
         }
     });
     if (urlFound !== 2) {
-        console.log(`Error Found : ${urlFound} URLs - (Should be 2)`)
+        console.log(`Error Found : ${urlFound} URLs - (Should be 2)`);
         PartialReset();
         return;
     }
@@ -70,7 +100,6 @@ parseButton.addEventListener("click", function(){
         if(NoEmptyValuesExist()){ //Checks for empty domain fields
             if(SubmissionEnabler(resultArray)){ //Submission Enabler function based on array values
                 if (defaultDomainValue === primaryDomainValue) { //Do default and primary match?
-
                     DefaultDomainOnly(defaultDomainValue);
                     parseButton.setAttribute('disabled', 'disabled');//Must disable after  content checks to prevent spam.
                 } else { //Do default and primary match?
@@ -80,7 +109,6 @@ parseButton.addEventListener("click", function(){
             } else { //Submission Enabler function based on array values
                 console.log(resultArray);
                 PartialReset();
-                
             }  
         }//Checks for empty domain fields.
     }//Checks for empty form fields.
@@ -91,15 +119,13 @@ parseButton.addEventListener("click", function(){
 - PartialReset. By partially resetting we avoid having arrays containing
  more then a single set of parsed data. */
 function PartialReset(){
-    //Results Box
+    //Results Box is set with error for agent
     resultBox.value = 'Text-To-Parse Missing Critical Values. See Console.log for more detail';
-    //Redeclare empty parsing arrays
+    //Re-declare empty parsing arrays
     originArray = []; // Global Origin Array will have values set after parse button click.
     resultArray = []; // Result array will contain escalation details. 
-    
-    //Reset Slack arrays
-    insensitiveSlackArray = [];
-    sensitiveSlackArray = [];
+    insensitiveSlackArray = []; //Reset Slack arrays
+    sensitiveSlackArray = []; //Reset Slack arrays
 }
 
 /* Function checks to make sure that both a paste from Agent Toolkit
@@ -161,7 +187,9 @@ function SubmissionEnabler(array){
     }
 }
 
-//After existing content checks, this function will remove the hidden display tags and apply inline display.
+/* ToggleSubmitToSlackButton() should only execute when domain content has been confirmed.
+Function will make visibile the slack submission preview, submit button and -
+the <p> html tag/description */
 function ToggleSubmitToSlackButton(){
     //Button Toggle
     slackSubmitButton.removeAttribute("style");
@@ -176,15 +204,15 @@ function ToggleSubmitToSlackButton(){
 
 
 
-//When reset button is clicked we should reset form to empty. 
-//Elements to clear:
-//PasteBox - ResultBox - situationBox - Reset arrays
+/* Standard Event Listener. Calling a seperate function for modular code.
+Also utilizing partialReset() */
 resetButton.addEventListener('click', function() {
-    resetFormValues();
+    ResetFormValues();
 });
 
-//Function will take parsed information of Results Box and create into Array split on new lines.
-//From there function will filter out only the needed information and inject Slack markup (`)
+/* CleanSlackPosting() function will take the visible slack submission preview
+and push into array elements split on new lines. forEach in this function will
+pull out the insensitive information to be used for issue tracking in Slack */
 function CleanSlackPosting(){
     insensitiveSlackArray = [];//Global Variable is reset at this point
     sensitiveSlackArray = resultBox.value.split("\n"); //Resetting global variable to use current results value.
@@ -214,7 +242,10 @@ function CleanSlackPosting(){
     });
 }
 
-function resetFormValues() {
+/* ResetFormValues() will allow set-to-defaults feature for escalation form.
+When reset, form should behave as if it were first load of page.
+This function resets all form values. */
+function ResetFormValues() {
     //PasteBox
     pasteBox.innerText = '';
     pasteBox.textContent = '';
@@ -247,8 +278,10 @@ function resetFormValues() {
     parseButton.removeAttribute('disabled');
 }
 
-//Function is to be passed complete URL to Site Check locations. 
-//Values are passed after Parse Button Click > and values are confirmed to be URLs.
+/* AutoApiChecker() should be passed the specific site to be checked IE. 
+https://abc.xyz.godaddywp.com/__mwp2_check__ 
+We see thus function being called after sucessful parse button click.
+Function uses fetch functionality*/
 function AutoApiChecker(SiteToCheck) {
     let url = SiteToCheck;
     fetch(url)
@@ -274,7 +307,9 @@ function AutoApiChecker(SiteToCheck) {
 }
 
 
-//Function for Slack Submit button. Propagated with demo API URL in this public code.
+/* Event listener for the Slack Submission Button. 
+Button should only allow click when content has been confirmed correct. 
+*/
 slackSubmitButton.addEventListener( "click", function() {
     let url = "https://ThisIsAPlaceHolder.Comz";
     let text = slackTextBox.value;
