@@ -16,7 +16,9 @@
 | never gonna say goodbye. Never gonna tell a lie and hurt you.
 */
 
-//Variables Declared first to minimize DOM calls. 
+;(JSTextParser = () => {
+
+    //Variables Declared first to minimize DOM calls. 
 const pasteBox = document.getElementById('pasteBox');
 const resultBox = document.getElementById('resultBox');
 const parseButton = document.getElementById('parseButton');
@@ -75,15 +77,20 @@ parseButton.addEventListener("click", function(){
         }
 
         if (element.match(/Site ID/i)){ //Using Increment to pull adjacent array value.
-            resultArray.push(`Site ID: ${arr[index + 1]}\n`);
+            if(arr[index + 1] !== '') {
+                resultArray.push(`Site ID: ${arr[index + 1]}\n`);
             }
+        }
         
         if (element.match(customerNumberRegex)) { //Pull Customer number and remove the #
-        resultArray.push(`Customer Number: ${element.substr(1)}\n`); //remove # character
+            if(element.substr(1) !== ''){
+                resultArray.push(`Customer Number: ${element.substr(1)}\n`); //remove # character
+            }
+        
         }
     });
     if (urlFound !== 2) {
-        console.log(`Error Found : ${urlFound} URLs - (Should be 2)`);
+        resultBox.value = `Error Found : ${urlFound} URLs - (Should be 2)`;
         PartialReset();
         return;
     }
@@ -98,7 +105,8 @@ parseButton.addEventListener("click", function(){
 
     //display only 3 or all 6 site check options.
         if(NoEmptyValuesExist()){ //Checks for empty domain fields
-            if(SubmissionEnabler(resultArray)){ //Submission Enabler function based on array values
+            let submissionEnablerVariable = SubmissionEnabler(resultArray);
+            if(submissionEnablerVariable === true){ //Submission Enabler function based on array values
                 if (defaultDomainValue === primaryDomainValue) { //Do default and primary match?
                     DefaultDomainOnly(defaultDomainValue);
                     parseButton.setAttribute('disabled', 'disabled');//Must disable after  content checks to prevent spam.
@@ -106,8 +114,11 @@ parseButton.addEventListener("click", function(){
                     DefaulyAndPrimaryDomains(defaultDomainValue, primaryDomainValue);
                     parseButton.setAttribute('disabled', 'disabled');//Must disable after  content checks to prevent spam.
                 }
-            } else { //Submission Enabler function based on array values
-                console.log(resultArray);
+            } else { //Submission Enabler returned !true. Handle the output.
+                resultBox.value = '';
+                submissionEnablerVariable.forEach(function(element) {
+                    resultBox.value = resultBox.value + `Missing: ${element} \n`;
+                });
                 PartialReset();
             }  
         }//Checks for empty domain fields.
@@ -120,7 +131,7 @@ parseButton.addEventListener("click", function(){
  more then a single set of parsed data. */
 function PartialReset(){
     //Results Box is set with error for agent
-    resultBox.value = 'Text-To-Parse Missing Critical Values. See Console.log for more detail';
+    //resultBox.value = 'Text-To-Parse Missing Critical Values';
     //Re-declare empty parsing arrays
     originArray = []; // Global Origin Array will have values set after parse button click.
     resultArray = []; // Result array will contain escalation details. 
@@ -173,17 +184,23 @@ function NoEmptyValuesExist(Def, Pri){
 Mandatory values before allowing submission to Slack. */
 function SubmissionEnabler(array){
     let x = 0; //x should equal 5 if it has the situation.
+    let missing = ["Site ID", "Customer Number", "Primary Domain", "Default Domain", "Situation"];
     array.forEach(function(element,index,arr){
-        if (element.match(/Site ID/i) !== null) {x++;}
-        if (element.match(/Customer Number/) !== null) {x++;}
-        if (element.match(/Pimary Domain/) !== null) {x++;}
-        if (element.match(/Default Domain/) !== null) {x++;}
-        if (element.match(/Situation/) !== null) {x++;}
+        if (element.match(/Site ID/i) !== null) {
+            x++;let y = missing.indexOf("Site ID"); missing.splice(y,1);}
+        if (element.match(/Customer Number/) !== null) {
+            x++;let y = missing.indexOf("Customer Number"); missing.splice(y,1);}
+        if (element.match(/Primary Domain:/) !== null) {
+            x++;let y = missing.indexOf("Primary Domain"); missing.splice(y,1);}
+        if (element.match(/Default Domain/) !== null) {
+            x++;let y = missing.indexOf("Default Domain"); missing.splice(y,1);}
+        if (element.match(/Situation/) !== null) {
+            x++;let y = missing.indexOf("Situation"); missing.splice(y,1);}
     })
-    if (x === 4){
+    if (x === 5){
         return true;
     } else {
-        return false;
+        return missing;
     }
 }
 
@@ -286,22 +303,17 @@ function AutoApiChecker(SiteToCheck) {
     let url = SiteToCheck;
     fetch(url)
     .then(function(response) {
-    console.log(response);
     return response.ok;
     
     })
     .then(function(respOK) {
         if(respOK == true){
-            console.log("Site Checks Pass");
             resultBox.value = resultBox.value + SiteToCheck + ' Reports: OK \n';
-            console.log("Response status: " + respOK);
         } else {
             resultBox.value = resultBox.value + SiteToCheck + ' Reports: FAIL \n';
-            console.log("Response status: " + respOK);
         }
     })
     .catch(function(error) {
-        console.log('Site Check Failed - Network Error', error);
         resultBox.value = resultBox.value + SiteToCheck + ' Reports: FAIL - Network Err \n';
     });
 }
@@ -325,3 +337,6 @@ slackSubmitButton.addEventListener( "click", function() {
 });  
 // For slack configuration please view the API documentation for Incoming Webhooks
 // https://godaddy.slack.com/apps/A0F7XDUAZ-incoming-webhooks?page=1
+
+})();
+
