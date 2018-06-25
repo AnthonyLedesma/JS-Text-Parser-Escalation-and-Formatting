@@ -96,7 +96,7 @@ parseButton.addEventListener("click", function(originArray, resultArray){
     });
     if (urlFound !== 2) {
         resultBox.value = `Error Found : ${urlFound} URLs - (Should be 2)`;
-        PartialReset();
+        PartialReset(originArray, resultArray, insensitiveSlackArray,sensitiveSlackArray);
         return;
     }
     resultArray.push(`\nSituation: ${situationBox.value}\n`);//alter value to end of each array itteration.
@@ -124,7 +124,7 @@ parseButton.addEventListener("click", function(originArray, resultArray){
                 submissionEnablerVariable.forEach(function(element) {
                     resultBox.value = resultBox.value + `Missing: ${element} \n`;
                 });
-                PartialReset();
+                PartialReset(originArray, resultArray, insensitiveSlackArray,sensitiveSlackArray);
             }  
         }//Checks for empty domain fields.
     }//Checks for empty form fields.
@@ -134,14 +134,14 @@ parseButton.addEventListener("click", function(originArray, resultArray){
 /* If a parse is allowed and all values are not present then we will do a 
 - PartialReset. By partially resetting we avoid having arrays containing
  more then a single set of parsed data. */
-function PartialReset(){
+function PartialReset(origArray, resuArray, insensSlackArray, sensSlackArray){
     //Results Box is set with error for agent
     //resultBox.value = 'Text-To-Parse Missing Critical Values';
     //Re-declare empty parsing arrays
-    originArray = []; // Global Origin Array will have values set after parse button click.
-    resultArray = []; // Result array will contain escalation details. 
-    insensitiveSlackArray = []; //Reset Slack arrays
-    sensitiveSlackArray = []; //Reset Slack arrays
+    origArray = []; // Global Origin Array will have values set after parse button click.
+    resuArray = []; // Result array will contain escalation details. 
+    insensSlackArray = []; //Reset Slack arrays
+    sensSlackArray = []; //Reset Slack arrays
 }
 
 /* Function checks to make sure that both a paste from Agent Toolkit
@@ -228,8 +228,8 @@ function ToggleSubmitToSlackButton(){
 
 /* Standard Event Listener. Calling a seperate function for modular code.
 Also utilizing partialReset() */
-resetButton.addEventListener('click', function() {
-    ResetFormValues();
+resetButton.addEventListener('click', function(originArray, resultArray) {
+    ResetFormValues(originArray, resultArray);
 });
 
 /* CleanSlackPosting() function will take the visible slack submission preview
@@ -267,7 +267,7 @@ function CleanSlackPosting(){
 /* ResetFormValues() will allow set-to-defaults feature for escalation form.
 When reset, form should behave as if it were first load of page.
 This function resets all form values. */
-function ResetFormValues() {
+function ResetFormValues(origArray, resuArray) {
     //PasteBox
     pasteBox.innerText = '';
     pasteBox.textContent = '';
@@ -279,11 +279,9 @@ function ResetFormValues() {
     situationBox.textContent = '';
     situationBox.value = '';
     //Redeclare empty parsing arrays
-    originArray = []; // Global Origin Array will have values set after parse button click.
-    resultArray = []; // Result array will contain escalation details. 
-    //Empty default and primary domains.
-    DEFAULT_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
-    PRIMARY_DOMAIN_VALUE = '';// Globals so that reset button will clear them.
+    origArray = []; // Global Origin Array will have values set after parse button click.
+    resuArray = []; // Result array will contain escalation details. 
+    
     
     slackSubmitButton.removeAttribute("style");//Hiding the Submit Slack Button
     slackSubmitButton.setAttribute("style", "display: none;");//Hiding the Submit Slack Button
