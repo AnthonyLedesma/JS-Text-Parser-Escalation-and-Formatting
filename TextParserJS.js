@@ -17,6 +17,8 @@
 */
 
 ;(JSTextParser = () => {
+ // Whole-script strict mode syntax
+'use strict';
 
     //Variables Declared first to minimize DOM calls. 
 const pasteBox = document.getElementById('pasteBox');
@@ -39,7 +41,7 @@ We start with content checking, setting a few scoped variables then -
 we begin parsing agent given content and set into arrays.
 Also part of this event listener will be integrated logic to prevent 
 obvious mis-use, spam, or buggy results. */
-parseButton.addEventListener("click", function(){
+parseButton.addEventListener("click", function(originArray, resultArray){
     //The following will check for no values in form and will return click event if no values exist.
     if (!SafeToPrintResultsBox()){return;}
     resultBox.value = ''; //Setting to clear with each parse click. 
@@ -47,6 +49,9 @@ parseButton.addEventListener("click", function(){
     const urlRegex = /^https:\/\/[^/]+/i;
     const customerNumberRegex = /^\#(\d+)/;
     let urlFound = 0; //Count should max at 2. Blocks parsing output.
+
+    let defaultDomainValue = '';
+    let primaryDomainValue = '';
 
     //Splitting long string into array by first splitting new lines. 
     originArray = pasteBox.value.split("\n");
