@@ -43,11 +43,12 @@ Also part of this event listener will be integrated logic to prevent
 obvious mis-use, spam, or buggy results. */
 parseButton.addEventListener("click", function(originArray, resultArray){
     //The following will check for no values in form and will return click event if no values exist.
+    console.log('button click event');
     if (!SafeToPrintResultsBox()){return;}
     resultBox.value = ''; //Setting to clear with each parse click. 
     // ** Breaking the regexes out into variables for readability / scalability
     const urlRegex = /^https:\/\/[^/]+/i;
-    const customerNumberRegex = /^\#(\d+)/;
+    const customerNumberRegex = /(?:#\ *)(\d+[a-z]+)|(?:customer number[#,:,\s]*)(\d+[a-z]+)/ig;
     let urlFound = 0; //Count should max at 2. Blocks parsing output.
 
     let defaultDomainValue = '';
@@ -67,6 +68,7 @@ parseButton.addEventListener("click", function(originArray, resultArray){
     SafeToPrintResultsBox(), NoEmptyValuesExist(), SubmissionEnabler
     call either DefaultDomainOnly() or DefaulyAndPrimaryDomains() based on content.
      */
+    console.log(`about to hit the forEach loop for ${originArray}`);
     originArray.forEach(function(element, index, arr) {
        element = element.replace(/^\s+/i, '');
         if(element.match(urlRegex)) {
@@ -88,10 +90,12 @@ parseButton.addEventListener("click", function(originArray, resultArray){
         }
         
         if (element.match(customerNumberRegex)) { //Pull Customer number and remove the #
-            if(element.substr(1) !== ''){
-                resultArray.push(`Customer Number: ${element.substr(1)}\n`); //remove # character
+            let custRegexMatch = customerNumberRegex.exec(element);
+            if (custRegexMatch[1] === undefined) {
+                resultArray.push(`Customer Number: ${custRegexMatch[2]}\n`);
+            } else {
+                resultArray.push(`Customer Number: ${custRegexMatch[1]}\n`); //remove # character
             }
-        
         }
     });
     if (urlFound !== 2) {
@@ -135,8 +139,6 @@ parseButton.addEventListener("click", function(originArray, resultArray){
 - PartialReset. By partially resetting we avoid having arrays containing
  more then a single set of parsed data. */
 function PartialReset(origArray, resuArray, insensSlackArray, sensSlackArray){
-    //Results Box is set with error for agent
-    //resultBox.value = 'Text-To-Parse Missing Critical Values';
     //Re-declare empty parsing arrays
     origArray = []; // Global Origin Array will have values set after parse button click.
     resuArray = []; // Result array will contain escalation details. 
@@ -215,6 +217,7 @@ the <p> html tag/description */
 function ToggleSubmitToSlackButton(){
     //Button Toggle
     slackSubmitButton.removeAttribute("style");
+    slackSubmitButton.removeAttribute('disabled');
     slackSubmitButton.setAttribute("style", "display: inline;");
     //p tag toggle
     slackPTag.removeAttribute("style");
