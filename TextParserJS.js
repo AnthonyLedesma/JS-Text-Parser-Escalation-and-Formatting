@@ -43,12 +43,11 @@ Also part of this event listener will be integrated logic to prevent
 obvious mis-use, spam, or buggy results. */
 parseButton.addEventListener("click", function(originArray, resultArray){
     //The following will check for no values in form and will return click event if no values exist.
-    console.log('button click event');
     if (!SafeToPrintResultsBox()){return;}
     resultBox.value = ''; //Setting to clear with each parse click. 
     // ** Breaking the regexes out into variables for readability / scalability
     const urlRegex = /^https:\/\/[^/]+/i;
-    const customerNumberRegex = /(?:#\ *)(\d+[a-z]+)|(?:customer number[#,:,\s]*)(\d+[a-z]+)/ig;
+    const customerNumberRegex = /(?:#\ *)([a-z]*[\d]*[a-z]*)|(?:customer number[#:\s]*)([a-z]*[\d]*[a-z]*)/ig;
     let urlFound = 0; //Count should max at 2. Blocks parsing output.
 
     let defaultDomainValue = '';
@@ -68,7 +67,6 @@ parseButton.addEventListener("click", function(originArray, resultArray){
     SafeToPrintResultsBox(), NoEmptyValuesExist(), SubmissionEnabler
     call either DefaultDomainOnly() or DefaulyAndPrimaryDomains() based on content.
      */
-    console.log(`about to hit the forEach loop for ${originArray}`);
     originArray.forEach(function(element, index, arr) {
        element = element.replace(/^\s+/i, '');
         if(element.match(urlRegex)) {
