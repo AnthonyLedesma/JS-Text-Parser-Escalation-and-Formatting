@@ -7,7 +7,7 @@ JS File does not have real API URL for slack.
 ![Template Generator](/screenShot.png?raw=true "Template Generator")
 
 
-### Version 1.1 for **JS Text Parser** AKA **Escalation Template - Issue Tracker**
+## Version 1.2 for **JS Text Parser** AKA **Escalation Template - Issue Tracker**
 
 ### Features:
 + Automated SiteChecks With Text Parser.
@@ -16,6 +16,10 @@ JS File does not have real API URL for slack.
 + Error In Results Box Will Indicate Missing Content.
 
 ### Change Log:
+#### 1.2
++ Regex complexity and capture logic has been improved to catch more customer number input variations.
++ Fixed a bug where Submit To Slack button was never re-enabling.
+
 #### 1.1
 + Form content error reporting. 
 + IIFE is housing all code now.
